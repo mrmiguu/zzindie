@@ -6,6 +6,6 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <App />
-    <Toaster containerClassName="toaster" />
+    <Toaster containerClassName="toaster font-mono opacity-95" position="bottom-center" />
   </>,
 )
