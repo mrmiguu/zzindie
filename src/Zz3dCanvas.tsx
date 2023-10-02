@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import Zz3dTileCarousel from './Zz3dTileCarousel'
+import { ZzAppStateContext } from './ZzAppState'
 import { GameState, MapSize } from './ZzTypes'
 import { clampN } from './math'
 import { values } from './utils'
@@ -10,6 +11,9 @@ function Zz3dCanvas() {
 
   // const mapSize = useMemo(() => pickRandom(mapSizes, { seed: `${mapId}:mapSize` }), [mapId])
   const mapSize: MapSize = 126
+
+  const { myId, players } = useContext(ZzAppStateContext)
+  const myPlayer = myId ? players[myId] : undefined
 
   const pieces = useMemo<GameState['pieces']>(() => ({}), [])
 
@@ -30,11 +34,10 @@ function Zz3dCanvas() {
         <ambientLight intensity={2} />
         <directionalLight position={[1, 1, 1]} />
         <Zz3dTileCarousel
-          // iCamera={myPiece?.x ?? 0}
           tilesHigh={20}
-          iCamera={0}
           cameraAngle={75}
           mapSize={mapSize}
+          iCamera={myPlayer?.x ?? 0}
           pieces={pieces}
           zIndexes={zIndexes}
         />
