@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  overflow: hidden;
+}
+
+:not(input) {
+  user-select: none;
+}
+
+.toaster * {
+  pointer-events: none;
+}
