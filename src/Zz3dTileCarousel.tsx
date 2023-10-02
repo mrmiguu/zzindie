@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-// import { useThree } from '@react-three/fiber'
 // import BoardPiece from './ZzBoardPiece'
-import { Html } from '@react-three/drei'
 import { TILE_PX } from './ZzConsts'
 import { GameState, MapSize, PieceState } from './ZzTypes'
 import { polygonInradius } from './math'
 import { PI } from './utils'
+
+const rainbowColors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] as const
 
 type Zz3dTileCarouselProps = {
   mapSize: MapSize
@@ -32,10 +32,7 @@ function Zz3dTileCarousel({
           <group key={i} position={[0, -inradius - 0.5, 0]}>
             <mesh>
               <boxGeometry args={[1, 1, tilesHigh]} />
-              <meshStandardMaterial color={'white'} />
-              <Html transform position={[0, 0, tilesHigh / 2]}>
-                {i}
-              </Html>
+              <meshStandardMaterial color={rainbowColors[i % rainbowColors.length]} />
             </mesh>
           </group>
         </group>

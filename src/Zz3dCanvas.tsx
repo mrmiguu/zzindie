@@ -9,7 +9,7 @@ function Zz3dCanvas() {
   // const mapId = 'test_map'
 
   // const mapSize = useMemo(() => pickRandom(mapSizes, { seed: `${mapId}:mapSize` }), [mapId])
-  const mapSize: MapSize = 10
+  const mapSize: MapSize = 126
 
   const pieces = useMemo<GameState['pieces']>(() => ({}), [])
 
@@ -26,12 +26,12 @@ function Zz3dCanvas() {
 
   return (
     <div className="absolute w-full h-full left-0 top-0">
-      <Canvas /* orthographic camera={{ zoom: 50, position: [0, 0, 100] }} */>
-        <ambientLight />
+      <Canvas>
+        <ambientLight intensity={2} />
         <directionalLight position={[1, 1, 1]} />
         <Zz3dTileCarousel
           // iCamera={myPiece?.x ?? 0}
-          tilesHigh={0.5}
+          tilesHigh={20}
           iCamera={0}
           cameraAngle={75}
           mapSize={mapSize}
