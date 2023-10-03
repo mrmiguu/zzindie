@@ -10,10 +10,21 @@ function ZzApp() {
     zzAppStateDispatch({
       type: 'addPlayer',
       player: {
+        id: 'bby',
+        level: 1,
+        name: 'bby',
+        sprite: '👶',
+        voice: 'en_us_001',
+        x: 2,
+      },
+    })
+    zzAppStateDispatch({
+      type: 'addPlayer',
+      player: {
         id: 'abc',
         level: 1,
         name: 'abc',
-        sprite: '🥶',
+        sprite: '🤠',
         voice: 'en_us_001',
         x: 0,
       },

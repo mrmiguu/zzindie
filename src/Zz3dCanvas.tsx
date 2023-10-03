@@ -7,7 +7,7 @@ import { clampN } from './math'
 import { values } from './utils'
 
 function Zz3dCanvas() {
-  const mapSize: MapSize = 7
+  const mapSize: MapSize = 64
 
   const { myId, pieces } = useContext(ZzAppStateContext)
   const myPlayer = myId ? pieces[myId] : undefined
@@ -29,8 +29,8 @@ function Zz3dCanvas() {
         <ambientLight intensity={3} />
         <directionalLight position={[1, 1, 0]} />
         <Zz3dTileCarousel
-          tilesHigh={20}
-          cameraAngle={75}
+          tilesHigh={500}
+          cameraAngle={70}
           mapSize={mapSize}
           iCamera={myPlayer?.x ?? 0}
           pieces={pieces}

@@ -6,12 +6,12 @@ function Zz2dUi() {
   const zzAppStateDispatch = useContext(ZzAppStateDispatchContext)
 
   return (
-    <div className="pointer-events-none overflow-hidden">
-      <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center">
+    <div className="overflow-hidden pointer-events-none">
+      {/* <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
         <div className="outline" />
-      </div>
+      </div> */}
 
-      <div className="absolute w-full h-full left-0 top-0 pointer-events-auto">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-auto">
         <Zz2dLRScreen
           onL={() => zzAppStateDispatch({ type: 'movePlayerLeft', playerId: 'abc' })}
           onR={() => zzAppStateDispatch({ type: 'movePlayerRight', playerId: 'abc' })}
