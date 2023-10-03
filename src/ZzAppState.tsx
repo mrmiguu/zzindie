@@ -1,11 +1,11 @@
 import { produce } from 'immer'
 import { Dispatch, PropsWithChildren, createContext, useReducer } from 'react'
-import { PlayerState } from './ZzTypes'
+import { BeastState, EntityState, PieceState, PlayerState } from './ZzTypes'
 import { stringify } from './utils'
 
 type ZzAppState = {
   myId: string | null
-  players: { [id: string]: PlayerState }
+  pieces: { [id: string]: PieceState | EntityState | BeastState | PlayerState }
 }
 
 type ZzAppStateAction =
@@ -30,7 +30,7 @@ function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
   switch (action.type) {
     case 'addPlayer': {
       return produce(zzAppState, zzAppState => {
-        zzAppState.players[action.player.id] = action.player
+        zzAppState.pieces[action.player.id] = action.player
       })
     }
     case 'setMyId': {
@@ -40,7 +40,7 @@ function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
     }
     case 'movePlayerLeft': {
       return produce(zzAppState, zzAppState => {
-        const player = zzAppState.players[action.playerId]
+        const player = zzAppState.pieces[action.playerId]
         if (player) {
           player.x = player.x - 1
         }
@@ -48,7 +48,7 @@ function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
     }
     case 'movePlayerRight': {
       return produce(zzAppState, zzAppState => {
-        const player = zzAppState.players[action.playerId]
+        const player = zzAppState.pieces[action.playerId]
         if (player) {
           player.x = player.x + 1
         }
@@ -66,7 +66,7 @@ export const ZzAppStateDispatchContext = createContext<Dispatch<ZzAppStateAction
 )
 
 export function ZzAppStateProvider({ children }: PropsWithChildren) {
-  const [zzAppState, dispatch] = useReducer(zzAppStateReducer, { myId: null, players: {} })
+  const [zzAppState, dispatch] = useReducer(zzAppStateReducer, { myId: null, pieces: {} })
 
   return (
     <ZzAppStateContext.Provider value={zzAppState}>
