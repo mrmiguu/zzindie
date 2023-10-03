@@ -6,7 +6,7 @@ import { GameState, MapSize, PieceState } from './ZzTypes'
 import { polygonInradius } from './math'
 import { PI } from './utils'
 
-const rainbowColors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] as const
+const rainbowColors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'] as const
 
 type Zz3dTileCarouselProps = {
   mapSize: MapSize

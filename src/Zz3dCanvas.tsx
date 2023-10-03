@@ -7,10 +7,7 @@ import { clampN } from './math'
 import { values } from './utils'
 
 function Zz3dCanvas() {
-  // const mapId = 'test_map'
-
-  // const mapSize = useMemo(() => pickRandom(mapSizes, { seed: `${mapId}:mapSize` }), [mapId])
-  const mapSize: MapSize = 126
+  const mapSize: MapSize = 7
 
   const { myId, players } = useContext(ZzAppStateContext)
   const myPlayer = myId ? players[myId] : undefined
@@ -29,10 +26,10 @@ function Zz3dCanvas() {
   )
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full">
-      <Canvas>
-        <ambientLight intensity={2} />
-        <directionalLight position={[1, 1, 1]} />
+    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-600 to-blue-400">
+      <Canvas flat linear>
+        <ambientLight intensity={3} />
+        <directionalLight position={[1, 1, 0]} />
         <Zz3dTileCarousel
           tilesHigh={200}
           cameraAngle={75}
