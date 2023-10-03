@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 // import BoardPiece from './ZzBoardPiece'
+import { animated, useSpring } from '@react-spring/three'
 import { TILE_PX } from './ZzConsts'
 import { GameState, MapSize, PieceState } from './ZzTypes'
 import { polygonInradius } from './math'
@@ -62,13 +63,17 @@ function Zz3dTileCarousel({
   //   })
   // }, [pieces, pxInradius, mapSize, zIndexes])
 
+  const springs = useSpring({
+    iCameraRotationZ: ((-iCamera * 360) / mapSize) * (PI / 180),
+  })
+
   return (
-    <group rotation={[-cameraAngle * (PI / 180), 0, 0]}>
-      <group position={[0, inradius + 0.5, -tilesHigh / 2]}>
-        <group rotation={[0, 0, ((-iCamera * 360) / mapSize) * (PI / 180)]}>
+    <group rotation-x={-cameraAngle * (PI / 180)}>
+      <group position-y={inradius + 0.5} position-z={-tilesHigh / 2}>
+        <animated.group rotation-z={springs.iCameraRotationZ}>
           {tileEls}
           {/* {pieceEls} */}
-        </group>
+        </animated.group>
       </group>
     </group>
   )

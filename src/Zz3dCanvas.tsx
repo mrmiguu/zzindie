@@ -29,12 +29,12 @@ function Zz3dCanvas() {
   )
 
   return (
-    <div className="absolute w-full h-full left-0 top-0">
+    <div className="absolute top-0 left-0 w-full h-full">
       <Canvas>
         <ambientLight intensity={2} />
         <directionalLight position={[1, 1, 1]} />
         <Zz3dTileCarousel
-          tilesHigh={20}
+          tilesHigh={200}
           cameraAngle={75}
           mapSize={mapSize}
           iCamera={myPlayer?.x ?? 0}
