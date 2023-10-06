@@ -1,27 +1,17 @@
 import { animated, useSpring } from '@react-spring/three'
-import { useTexture } from '@react-three/drei'
+import { PropsWithChildren } from 'react'
 import { GameState, MapSize, PieceState } from './ZzTypes'
-import emojiBabyPng from './assets/emojis/baby.png'
-import emojiCowboyHatFacePng from './assets/emojis/cowboy-hat-face.png'
 import { PI } from './utils'
 
-type Zz3dTilePieceProps = {
+type Zz3dTilePieceProps = PropsWithChildren<{
   piece: PieceState
   zIndexes: GameState['pieces'][keyof GameState['pieces']][]
   mapSize: MapSize
   inradius: number
   tilesHigh: number
-}
+}>
 
-function Zz3dTilePiece({ piece, zIndexes, mapSize, inradius, tilesHigh }: Zz3dTilePieceProps) {
-  // TODO: fix this-- it's super sketch
-  //       React Hook "useTexture" is called conditionally.
-  //       React Hooks must be called in the exact same order in every component render.
-  const texture =
-    'sprite' in piece && typeof piece.sprite === 'string'
-      ? useTexture(piece.sprite === '👶' ? emojiBabyPng : piece.sprite === '🤠' ? emojiCowboyHatFacePng : '')
-      : null
-
+function Zz3dTilePiece({ piece, zIndexes, mapSize, inradius, tilesHigh, children }: Zz3dTilePieceProps) {
   // Calculate z position based on zIndexes here
   const zIndex = zIndexes.findIndex(p => p.id === piece.id)
   const end = zIndexes.length - 1
@@ -40,7 +30,7 @@ function Zz3dTilePiece({ piece, zIndexes, mapSize, inradius, tilesHigh }: Zz3dTi
       <animated.group position-y={springs.pieceYPositionY} position-z={tilesHigh / 2 + 0.5}>
         <mesh>
           <boxGeometry args={[1, 0, 1]} />
-          <meshStandardMaterial map={texture} transparent />
+          {children}
         </mesh>
       </animated.group>
     </animated.group>

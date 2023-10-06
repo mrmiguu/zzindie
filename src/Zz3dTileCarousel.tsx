@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 // import BoardPiece from './ZzBoardPiece'
 import { animated, useSpring } from '@react-spring/three'
+import Zz3dTileEntity from './Zz3dTileEntity'
 import Zz3dTilePiece from './Zz3dTilePiece'
 import { TILE_PX } from './ZzConsts'
-import { GameState, MapSize, PieceState } from './ZzTypes'
+import { GameState, MapSize } from './ZzTypes'
 import { polygonInradius } from './math'
 import { PI, values } from './utils'
 
@@ -14,7 +15,7 @@ type Zz3dTileCarouselProps = {
   tilesHigh: number
   iCamera: number
   cameraAngle: number
-  pieces: { [id: string]: PieceState }
+  pieces: GameState['pieces']
   zIndexes: GameState['pieces'][keyof GameState['pieces']][]
 }
 
@@ -37,16 +38,27 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, iCamera, cameraAngle, pieces, zI
     })
   }, [mapSize, tilesHigh, inradius])
 
-  const pieceEls = values(pieces).map(piece => (
-    <Zz3dTilePiece
-      key={piece.id}
-      piece={piece}
-      zIndexes={zIndexes}
-      mapSize={mapSize}
-      inradius={inradius}
-      tilesHigh={tilesHigh}
-    />
-  ))
+  const pieceEls = values(pieces).map(piece =>
+    'sprite' in piece ? (
+      <Zz3dTileEntity
+        key={piece.id}
+        entity={piece}
+        zIndexes={zIndexes}
+        mapSize={mapSize}
+        inradius={inradius}
+        tilesHigh={tilesHigh}
+      />
+    ) : (
+      <Zz3dTilePiece
+        key={piece.id}
+        piece={piece}
+        zIndexes={zIndexes}
+        mapSize={mapSize}
+        inradius={inradius}
+        tilesHigh={tilesHigh}
+      />
+    ),
+  )
 
   const springs = useSpring({
     iCameraRotationZ: ((-iCamera * 360) / mapSize) * (PI / 180),
