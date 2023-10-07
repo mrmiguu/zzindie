@@ -4,7 +4,7 @@ import { animated, useSpring } from '@react-spring/three'
 import Zz3dTileEntity from './Zz3dTileEntity'
 import Zz3dTilePiece from './Zz3dTilePiece'
 import { TILE_PX } from './ZzConsts'
-import { GameState, MapSize } from './ZzTypes'
+import { GamePieceState, GameStatePieces, MapSize } from './ZzTypes'
 import { polygonInradius } from './math'
 import { PI, values } from './utils'
 
@@ -15,8 +15,8 @@ type Zz3dTileCarouselProps = {
   tilesHigh: number
   iCamera: number
   cameraAngle: number
-  pieces: GameState['pieces']
-  zIndexes: GameState['pieces'][keyof GameState['pieces']][]
+  pieces: GameStatePieces
+  zIndexes: GamePieceState[]
 }
 
 function Zz3dTileCarousel({ mapSize, tilesHigh, iCamera, cameraAngle, pieces, zIndexes }: Zz3dTileCarouselProps) {

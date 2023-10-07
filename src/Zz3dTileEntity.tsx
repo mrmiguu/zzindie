@@ -1,10 +1,10 @@
 import Zz3dTilePiece from './Zz3dTilePiece'
-import { EntityState, GameState, MapSize } from './ZzTypes'
+import { EntityState, GamePieceState, MapSize } from './ZzTypes'
 import { useEmojiTextureAsset } from './assets.emojis'
 
 type Zz3dTileEntityProps = {
   entity: EntityState
-  zIndexes: GameState['pieces'][keyof GameState['pieces']][]
+  zIndexes: GamePieceState[]
   mapSize: MapSize
   inradius: number
   tilesHigh: number
@@ -15,7 +15,12 @@ function Zz3dTileEntity({ entity, ...props }: Zz3dTileEntityProps) {
 
   return (
     <Zz3dTilePiece {...props} piece={entity}>
-      {texture && <meshStandardMaterial map={texture} transparent />}
+      {texture && (
+        <mesh>
+          <boxGeometry args={[1, 0, 1]} />
+          <meshStandardMaterial map={texture} transparent />
+        </mesh>
+      )}
     </Zz3dTilePiece>
   )
 }

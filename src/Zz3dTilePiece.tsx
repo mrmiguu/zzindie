@@ -1,11 +1,11 @@
 import { animated, useSpring } from '@react-spring/three'
 import { PropsWithChildren } from 'react'
-import { GameState, MapSize, PieceState } from './ZzTypes'
+import { GamePieceState, MapSize, PieceState } from './ZzTypes'
 import { PI } from './utils'
 
 type Zz3dTilePieceProps = PropsWithChildren<{
   piece: PieceState
-  zIndexes: GameState['pieces'][keyof GameState['pieces']][]
+  zIndexes: GamePieceState[]
   mapSize: MapSize
   inradius: number
   tilesHigh: number
@@ -28,10 +28,7 @@ function Zz3dTilePiece({ piece, zIndexes, mapSize, inradius, tilesHigh, children
   return (
     <animated.group key={piece.id} rotation-z={springs.pieceXRotationZ}>
       <animated.group position-y={springs.pieceYPositionY} position-z={tilesHigh / 2 + 0.5}>
-        <mesh>
-          <boxGeometry args={[1, 0, 1]} />
-          {children}
-        </mesh>
+        {children}
       </animated.group>
     </animated.group>
   )

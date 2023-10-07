@@ -4,12 +4,7 @@ import { Db_ChatMessage, Db_Map, Db_Player, Db_PlayerPosition } from './ZzDbType
 import { Voice } from './ZzTTS'
 import { EmojiAssetId } from './assets.emojis'
 
-type GameState = {
-  pieces: { [id: string]: PieceState | EntityState | BeastState | PlayerState }
-  updatedAt: number
-}
-
-type PieceState = {
+export type PieceState = {
   id: string
   x: number
   xTimestamp?: number
@@ -20,38 +15,34 @@ type PieceState = {
   style?: CSSProperties
 }
 
-type EntityState = PieceState & {
+export type EntityState = PieceState & {
   sprite: EmojiAssetId
   hueRotate?: number
 }
 
-type BeastState = EntityState & {
+export type BeastState = EntityState & {
   level: number
 }
 
-type PlayerState = BeastState & {
+export type PlayerState = BeastState & {
   name: string
   voice: Voice
 }
 
-type EventSetPlayer = { type: 'set_player' } & Db_Player
-type EventRemovePlayer = { type: 'remove_player' } & Pick<Db_Player, 'id'>
-type EventSetPlayerPosition = { type: 'set_player_position' } & Pick<Db_Player, 'id'> & Db_PlayerPosition
-type EventChatMessage = { type: 'chat_message' } & Omit<Db_ChatMessage, 'id'> & { map_id: Db_Map['id'] }
-type GameEvent = EventSetPlayer | EventRemovePlayer | EventSetPlayerPosition | EventChatMessage
+export type GamePieceState = PieceState | EntityState | BeastState | PlayerState
 
-type MapSize = (typeof mapSizes)[number]
+export type GameStatePieces = { [id: string]: GamePieceState }
 
-export type {
-  BeastState,
-  EntityState,
-  EventChatMessage,
-  EventRemovePlayer,
-  EventSetPlayer,
-  EventSetPlayerPosition,
-  GameEvent,
-  GameState,
-  MapSize,
-  PieceState,
-  PlayerState,
+export type GameState = {
+  pieces: GameStatePieces
+  // TODO: deprecate
+  updatedAt: number
 }
+
+export type EventSetPlayer = { type: 'set_player' } & Db_Player
+export type EventRemovePlayer = { type: 'remove_player' } & Pick<Db_Player, 'id'>
+export type EventSetPlayerPosition = { type: 'set_player_position' } & Pick<Db_Player, 'id'> & Db_PlayerPosition
+export type EventChatMessage = { type: 'chat_message' } & Omit<Db_ChatMessage, 'id'> & { map_id: Db_Map['id'] }
+export type GameEvent = EventSetPlayer | EventRemovePlayer | EventSetPlayerPosition | EventChatMessage
+
+export type MapSize = (typeof mapSizes)[number]
