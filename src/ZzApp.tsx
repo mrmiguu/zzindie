@@ -12,7 +12,7 @@ function ZzApp() {
       player: {
         id: 'bby',
         level: 1,
-        name: 'bby',
+        name: 'Mr. Jelly',
         sprite: '🪼',
         voice: 'en_us_001',
         x: 2,
@@ -23,7 +23,7 @@ function ZzApp() {
       player: {
         id: 'abc',
         level: 1,
-        name: 'abc',
+        name: 'Squid esq.',
         sprite: '🦑',
         voice: 'en_us_001',
         x: 0,

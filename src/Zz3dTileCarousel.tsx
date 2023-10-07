@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { animated, useSpring } from '@react-spring/three'
 import Zz3dTileEntity from './Zz3dTileEntity'
 import Zz3dTilePiece from './Zz3dTilePiece'
+import Zz3dTilePlayer from './Zz3dTilePlayer'
 import { TILE_PX } from './ZzConsts'
 import { GamePieceState, GameStatePieces, MapSize } from './ZzTypes'
 import { polygonInradius } from './math'
@@ -39,7 +40,16 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, iCamera, cameraAngle, pieces, zI
   }, [mapSize, tilesHigh, inradius])
 
   const pieceEls = values(pieces).map(piece =>
-    'sprite' in piece ? (
+    'name' in piece ? (
+      <Zz3dTilePlayer
+        key={piece.id}
+        player={piece}
+        zIndexes={zIndexes}
+        mapSize={mapSize}
+        inradius={inradius}
+        tilesHigh={tilesHigh}
+      />
+    ) : 'sprite' in piece ? (
       <Zz3dTileEntity
         key={piece.id}
         entity={piece}
