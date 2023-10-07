@@ -2,6 +2,7 @@ import { CSSProperties } from 'react'
 import { mapSizes } from './ZzConsts'
 import { Db_ChatMessage, Db_Map, Db_Player, Db_PlayerPosition } from './ZzDbTypes'
 import { Voice } from './ZzTTS'
+import { EmojiAssetId } from './assets.emojis'
 
 type GameState = {
   pieces: { [id: string]: PieceState | EntityState | BeastState | PlayerState }
@@ -20,7 +21,7 @@ type PieceState = {
 }
 
 type EntityState = PieceState & {
-  sprite: string
+  sprite: EmojiAssetId
   hueRotate?: number
 }
 
