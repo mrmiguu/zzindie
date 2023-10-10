@@ -10,8 +10,8 @@ function ZzApp() {
     zzAppStateDispatch({
       type: 'addEntity',
       entity: {
-        id: 'sun',
-        sprite: '🌝',
+        id: 'palm',
+        sprite: '🌴',
         zSpecial: 'background',
         x: 3,
       },
@@ -19,8 +19,8 @@ function ZzApp() {
     zzAppStateDispatch({
       type: 'addEntity',
       entity: {
-        id: 'moon',
-        sprite: '🌚',
+        id: 'drink',
+        sprite: '🍹',
         zSpecial: 'foreground',
         x: 3,
       },
