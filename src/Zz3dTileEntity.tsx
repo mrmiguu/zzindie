@@ -22,6 +22,7 @@ function Zz3dTileEntity({ entity, children, ...props }: Zz3dTileEntityProps) {
       ? {
           from: { breathingScale: 1 },
           to: { breathingScale: 0.95 },
+          // BUG: we stop breathing intermittently on-move
           loop: { reverse: true },
           config: {
             duration: 1500,
