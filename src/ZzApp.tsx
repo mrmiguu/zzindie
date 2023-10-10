@@ -8,6 +8,24 @@ function ZzApp() {
 
   useEffect(() => {
     zzAppStateDispatch({
+      type: 'addEntity',
+      entity: {
+        id: 'sun',
+        sprite: '🌝',
+        zSpecial: 'background',
+        x: 3,
+      },
+    })
+    zzAppStateDispatch({
+      type: 'addEntity',
+      entity: {
+        id: 'moon',
+        sprite: '🌚',
+        zSpecial: 'foreground',
+        x: 3,
+      },
+    })
+    zzAppStateDispatch({
       type: 'addPlayer',
       player: {
         id: 'bby',

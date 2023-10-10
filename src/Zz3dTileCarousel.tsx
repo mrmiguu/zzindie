@@ -5,7 +5,7 @@ import Zz3dTileEntity from './Zz3dTileEntity'
 import Zz3dTilePiece from './Zz3dTilePiece'
 import Zz3dTilePlayer from './Zz3dTilePlayer'
 import { TILE_PX } from './ZzConsts'
-import { GamePieceState, GameStatePieces, MapSize } from './ZzTypes'
+import { GameStatePieces, MapSize } from './ZzTypes'
 import { polygonInradius } from './math'
 import { PI, values } from './utils'
 
@@ -14,13 +14,12 @@ const rainbowColors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#
 type Zz3dTileCarouselProps = {
   mapSize: MapSize
   tilesHigh: number
-  iCamera: number
+  xCamera: number
   cameraAngle: number
   pieces: GameStatePieces
-  zIndexes: GamePieceState[]
 }
 
-function Zz3dTileCarousel({ mapSize, tilesHigh, iCamera, cameraAngle, pieces, zIndexes }: Zz3dTileCarouselProps) {
+function Zz3dTileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: Zz3dTileCarouselProps) {
   const inradiusPx = polygonInradius(mapSize, TILE_PX)
   const inradius = inradiusPx / TILE_PX
 
@@ -41,43 +40,22 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, iCamera, cameraAngle, pieces, zI
 
   const pieceEls = values(pieces).map(piece =>
     'name' in piece ? (
-      <Zz3dTilePlayer
-        key={piece.id}
-        player={piece}
-        zIndexes={zIndexes}
-        mapSize={mapSize}
-        inradius={inradius}
-        tilesHigh={tilesHigh}
-      />
+      <Zz3dTilePlayer key={piece.id} player={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : 'sprite' in piece ? (
-      <Zz3dTileEntity
-        key={piece.id}
-        entity={piece}
-        zIndexes={zIndexes}
-        mapSize={mapSize}
-        inradius={inradius}
-        tilesHigh={tilesHigh}
-      />
+      <Zz3dTileEntity key={piece.id} entity={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : (
-      <Zz3dTilePiece
-        key={piece.id}
-        piece={piece}
-        zIndexes={zIndexes}
-        mapSize={mapSize}
-        inradius={inradius}
-        tilesHigh={tilesHigh}
-      />
+      <Zz3dTilePiece key={piece.id} piece={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ),
   )
 
   const springs = useSpring({
-    iCameraRotationZ: ((-iCamera * 360) / mapSize) * (PI / 180),
+    xCameraRotationZ: ((-xCamera * 360) / mapSize) * (PI / 180),
   })
 
   return (
     <group rotation-x={-cameraAngle * (PI / 180)}>
       <group position-y={inradius + 0.5} position-z={-tilesHigh / 2}>
-        <animated.group rotation-z={springs.iCameraRotationZ}>
+        <animated.group rotation-z={springs.xCameraRotationZ}>
           {tileEls}
           {pieceEls}
         </animated.group>

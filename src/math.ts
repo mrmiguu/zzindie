@@ -1,6 +1,6 @@
 import { cos, PI, pow, sin, sqrt, tan } from './utils'
 
-const clampN = (n: number, nceil: number) => {
+const absMod = (n: number, nceil: number) => {
   if (n < 0) return (nceil - ((nceil - n) % nceil)) % nceil
   else return n % nceil
 }
@@ -20,4 +20,4 @@ function easeOutExpo(x: number): number {
   return x === 1 ? 1 : 1 - pow(2, -10 * x)
 }
 
-export { clampN, distBetweenTwoPointsOnACircle, easeOutExpo, polygonInradius }
+export { absMod, distBetweenTwoPointsOnACircle, easeOutExpo, polygonInradius }

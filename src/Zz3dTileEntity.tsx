@@ -1,12 +1,11 @@
 import { PropsWithChildren } from 'react'
 import Zz3dTilePiece from './Zz3dTilePiece'
-import { EntityState, GamePieceState, MapSize } from './ZzTypes'
+import { EntityState, MapSize } from './ZzTypes'
 import { useEmojiTextureAsset } from './assets.emojis'
 import { PI } from './utils'
 
 type Zz3dTileEntityProps = PropsWithChildren<{
   entity: EntityState
-  zIndexes: GamePieceState[]
   mapSize: MapSize
   inradius: number
   tilesHigh: number

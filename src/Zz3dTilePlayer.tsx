@@ -1,10 +1,9 @@
 import { RoundedBox, Text } from '@react-three/drei'
 import Zz3dTileEntity from './Zz3dTileEntity'
-import { GamePieceState, MapSize, PlayerState } from './ZzTypes'
+import { MapSize, PlayerState } from './ZzTypes'
 
 type Zz3dTilePlayerProps = {
   player: PlayerState
-  zIndexes: GamePieceState[]
   mapSize: MapSize
   inradius: number
   tilesHigh: number

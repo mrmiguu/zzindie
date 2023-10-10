@@ -10,6 +10,14 @@ type ZzAppState = {
 
 type ZzAppStateAction =
   | {
+      type: 'addEntity'
+      entity: EntityState
+    }
+  | {
+      type: 'addBeast'
+      beast: BeastState
+    }
+  | {
       type: 'addPlayer'
       player: PlayerState
     }
@@ -28,8 +36,21 @@ type ZzAppStateAction =
 
 function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
   switch (action.type) {
+    case 'addEntity': {
+      return produce(zzAppState, zzAppState => {
+        action.entity.xTimestamp = Date.now()
+        zzAppState.pieces[action.entity.id] = action.entity
+      })
+    }
+    case 'addBeast': {
+      return produce(zzAppState, zzAppState => {
+        action.beast.xTimestamp = Date.now()
+        zzAppState.pieces[action.beast.id] = action.beast
+      })
+    }
     case 'addPlayer': {
       return produce(zzAppState, zzAppState => {
+        action.player.xTimestamp = Date.now()
         zzAppState.pieces[action.player.id] = action.player
       })
     }
@@ -43,6 +64,7 @@ function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
         const player = zzAppState.pieces[action.playerId]
         if (player) {
           player.x = player.x - 1
+          player.xTimestamp = Date.now()
         }
       })
     }
@@ -51,6 +73,7 @@ function zzAppStateReducer(zzAppState: ZzAppState, action: ZzAppStateAction) {
         const player = zzAppState.pieces[action.playerId]
         if (player) {
           player.x = player.x + 1
+          player.xTimestamp = Date.now()
         }
       })
     }
