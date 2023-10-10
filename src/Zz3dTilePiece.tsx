@@ -2,6 +2,7 @@ import { animated, useSpring } from '@react-spring/three'
 import { PropsWithChildren, useContext } from 'react'
 import { ZzAppStateContext } from './ZzAppState'
 import { MapSize, PieceState } from './ZzTypes'
+import { absMod } from './math'
 import { PI, values } from './utils'
 
 const OFF_HALF = 0.5
@@ -18,7 +19,7 @@ function Zz3dTilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHig
   const { pieces } = useContext(ZzAppStateContext)
 
   const zIndexes = values(pieces)
-    .filter(p => p.x === x && !p.zSpecial)
+    .filter(p => absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 
   const zIndex = zIndexes.findIndex(p => p.id === id)
