@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 // import BoardPiece from './ZzBoardPiece'
 import { animated, useSpring } from '@react-spring/three'
+import Zz3dTileBeast from './Zz3dTileBeast'
 import Zz3dTileEntity from './Zz3dTileEntity'
 import Zz3dTilePiece from './Zz3dTilePiece'
 import Zz3dTilePlayer from './Zz3dTilePlayer'
@@ -41,6 +42,8 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: 
   const pieceEls = values(pieces).map(piece =>
     'name' in piece ? (
       <Zz3dTilePlayer key={piece.id} player={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+    ) : 'level' in piece ? (
+      <Zz3dTileBeast key={piece.id} beast={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : 'sprite' in piece ? (
       <Zz3dTileEntity key={piece.id} entity={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : (
