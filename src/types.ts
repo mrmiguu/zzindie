@@ -1,6 +1,6 @@
-import { mapSizes } from './ZzConsts'
-import { Voice } from './ZzTTS'
 import { EmojiAssetId } from './assets.emojis'
+import { mapSizes } from './consts'
+import { Voice } from './tts'
 
 export type PieceState = {
   id: string

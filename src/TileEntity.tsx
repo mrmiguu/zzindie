@@ -1,18 +1,20 @@
-import { animated, easings, useSpring } from '@react-spring/three'
 import { PropsWithChildren } from 'react'
-import Zz3dTilePiece from './Zz3dTilePiece'
-import { EntityState, MapSize } from './ZzTypes'
+
+import { animated, easings, useSpring } from '@react-spring/three'
+
 import { useEmojiTextureAsset } from './assets.emojis'
+import TilePiece from './TilePiece'
+import { EntityState, MapSize } from './types'
 import { PI } from './utils'
 
-type Zz3dTileEntityProps = PropsWithChildren<{
+type TileEntityProps = PropsWithChildren<{
   entity: EntityState
   mapSize: MapSize
   inradius: number
   tilesHigh: number
 }>
 
-function Zz3dTileEntity({ entity, children, ...props }: Zz3dTileEntityProps) {
+function TileEntity({ entity, children, ...props }: TileEntityProps) {
   const texture = useEmojiTextureAsset(entity.sprite)
 
   const isEntityBeast = 'level' in entity
@@ -33,7 +35,7 @@ function Zz3dTileEntity({ entity, children, ...props }: Zz3dTileEntityProps) {
   )
 
   return (
-    <Zz3dTilePiece {...props} piece={entity}>
+    <TilePiece {...props} piece={entity}>
       {texture && (
         <animated.mesh rotation-x={(90 * PI) / 180} scale={breathingScale}>
           <boxGeometry args={[1, 1, 0]} />
@@ -41,8 +43,8 @@ function Zz3dTileEntity({ entity, children, ...props }: Zz3dTileEntityProps) {
           {children}
         </animated.mesh>
       )}
-    </Zz3dTilePiece>
+    </TilePiece>
   )
 }
 
-export default Zz3dTileEntity
+export default TileEntity

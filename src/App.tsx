@@ -1,13 +1,14 @@
 import { useContext, useEffect } from 'react'
-import Zz2dUi from './Zz2dUi'
-import Zz3dCanvas from './Zz3dCanvas'
-import { ZzAppStateDispatchContext } from './ZzAppState'
 
-function ZzApp() {
-  const zzAppStateDispatch = useContext(ZzAppStateDispatchContext)
+import { AppStateDispatchContext } from './AppState'
+import Canvas3D from './Canvas3D'
+import Ui from './Ui'
+
+function App() {
+  const appStateDispatch = useContext(AppStateDispatchContext)
 
   useEffect(() => {
-    zzAppStateDispatch({
+    appStateDispatch({
       type: 'addEntity',
       entity: {
         id: 'palm',
@@ -16,7 +17,7 @@ function ZzApp() {
         x: 3,
       },
     })
-    zzAppStateDispatch({
+    appStateDispatch({
       type: 'addEntity',
       entity: {
         id: 'drink',
@@ -25,7 +26,7 @@ function ZzApp() {
         x: 3,
       },
     })
-    zzAppStateDispatch({
+    appStateDispatch({
       type: 'addPlayer',
       player: {
         id: 'bby',
@@ -36,7 +37,7 @@ function ZzApp() {
         x: 2,
       },
     })
-    zzAppStateDispatch({
+    appStateDispatch({
       type: 'addPlayer',
       player: {
         id: 'abc',
@@ -47,16 +48,16 @@ function ZzApp() {
         x: 0,
       },
     })
-    zzAppStateDispatch({ type: 'setMyId', id: 'abc' })
+    appStateDispatch({ type: 'setMyId', id: 'abc' })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <>
-      <Zz3dCanvas />
-      <Zz2dUi />
+      <Canvas3D />
+      <Ui />
     </>
   )
 }
 
-export default ZzApp
+export default App

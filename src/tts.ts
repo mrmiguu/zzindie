@@ -1,4 +1,5 @@
 import { Howl } from 'howler'
+
 import { error, log, stringify, values } from './utils'
 
 const voiceLookup = {
@@ -134,7 +135,7 @@ const reverseVoiceLookup = (voice: Voice): [VoiceCategory, VoiceName] => {
     const voiceByName = voiceLookup[category as VoiceCategory]!
     for (const name in voiceByName) {
       // nested key type definitions are messy
-      if ((voiceByName as any)[name] === voice) {
+      if ((voiceByName as never)[name] === voice) {
         return [category as VoiceCategory, name as VoiceName]
       }
     }

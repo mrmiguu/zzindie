@@ -1,22 +1,24 @@
-import { animated, useSpring } from '@react-spring/three'
 import { PropsWithChildren, useContext } from 'react'
-import { ZzAppStateContext } from './ZzAppState'
-import { MapSize, PieceState } from './ZzTypes'
+
+import { animated, useSpring } from '@react-spring/three'
+
+import { AppStateContext } from './AppState'
 import { absMod } from './math'
+import { MapSize, PieceState } from './types'
 import { PI, values } from './utils'
 
 const OFF_HALF = 0.5
 const NARROW_FACTOR = 1.1
 
-type Zz3dTilePieceProps = PropsWithChildren<{
+type TilePieceProps = PropsWithChildren<{
   piece: PieceState
   mapSize: MapSize
   inradius: number
   tilesHigh: number
 }>
 
-function Zz3dTilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHigh, children }: Zz3dTilePieceProps) {
-  const { pieces } = useContext(ZzAppStateContext)
+function TilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHigh, children }: TilePieceProps) {
+  const { pieces } = useContext(AppStateContext)
 
   const zIndexes = values(pieces)
     .filter(p => absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
@@ -42,4 +44,4 @@ function Zz3dTilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHig
   )
 }
 
-export default Zz3dTilePiece
+export default TilePiece

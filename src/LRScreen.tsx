@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-type Zz2dLRScreenPaneProps = {
+type LRScreenPaneProps = {
   opacity: number
   onClick: () => void
 }
 
-function Zz2dLRScreenPane({ opacity, onClick }: Zz2dLRScreenPaneProps) {
+function LRScreenPane({ opacity, onClick }: LRScreenPaneProps) {
   return (
     <button
       className="w-1/2 h-full transition duration-150 ease-in-out bg-transparent focus:bg-transparent focus:outline-none focus:ring-0 active:bg-black"
@@ -15,24 +15,24 @@ function Zz2dLRScreenPane({ opacity, onClick }: Zz2dLRScreenPaneProps) {
   )
 }
 
-type Zz2dLRScreenProps = {
+type LRScreenProps = {
   onL: () => void
   onR: () => void
 }
 
-function Zz2dLRScreen({ onL, onR }: Zz2dLRScreenProps) {
+function LRScreen({ onL, onR }: LRScreenProps) {
   const [opacity, setOpacity] = useState(0.1)
 
   return (
     <div className="absolute flex w-full h-full">
-      <Zz2dLRScreenPane
+      <LRScreenPane
         opacity={opacity}
         onClick={() => {
           setOpacity(o => o * 0.7)
           onL()
         }}
       />
-      <Zz2dLRScreenPane
+      <LRScreenPane
         opacity={opacity}
         onClick={() => {
           setOpacity(o => o * 0.7)
@@ -43,4 +43,4 @@ function Zz2dLRScreen({ onL, onR }: Zz2dLRScreenProps) {
   )
 }
 
-export default Zz2dLRScreen
+export default LRScreen

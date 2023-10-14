@@ -1,18 +1,19 @@
 import { useMemo } from 'react'
-// import BoardPiece from './ZzBoardPiece'
+
 import { animated, useSpring } from '@react-spring/three'
-import Zz3dTileBeast from './Zz3dTileBeast'
-import Zz3dTileEntity from './Zz3dTileEntity'
-import Zz3dTilePiece from './Zz3dTilePiece'
-import Zz3dTilePlayer from './Zz3dTilePlayer'
-import { TILE_PX } from './ZzConsts'
-import { GameStatePieces, MapSize } from './ZzTypes'
+
+import { TILE_PX } from './consts'
 import { polygonInradius } from './math'
+import TileBeast from './TileBeast'
+import TileEntity from './TileEntity'
+import TilePiece from './TilePiece'
+import TilePlayer from './TilePlayer'
+import { GameStatePieces, MapSize } from './types'
 import { PI, values } from './utils'
 
 const rainbowColors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'] as const
 
-type Zz3dTileCarouselProps = {
+type TileCarouselProps = {
   mapSize: MapSize
   tilesHigh: number
   xCamera: number
@@ -20,7 +21,7 @@ type Zz3dTileCarouselProps = {
   pieces: GameStatePieces
 }
 
-function Zz3dTileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: Zz3dTileCarouselProps) {
+function TileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: TileCarouselProps) {
   const inradiusPx = polygonInradius(mapSize, TILE_PX)
   const inradius = inradiusPx / TILE_PX
 
@@ -41,13 +42,13 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: 
 
   const pieceEls = values(pieces).map(piece =>
     'name' in piece ? (
-      <Zz3dTilePlayer key={piece.id} player={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+      <TilePlayer key={piece.id} player={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : 'level' in piece ? (
-      <Zz3dTileBeast key={piece.id} beast={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+      <TileBeast key={piece.id} beast={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : 'sprite' in piece ? (
-      <Zz3dTileEntity key={piece.id} entity={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+      <TileEntity key={piece.id} entity={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : (
-      <Zz3dTilePiece key={piece.id} piece={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+      <TilePiece key={piece.id} piece={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ),
   )
 
@@ -67,4 +68,4 @@ function Zz3dTileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: 
   )
 }
 
-export default Zz3dTileCarousel
+export default TileCarousel

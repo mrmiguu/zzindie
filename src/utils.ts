@@ -10,14 +10,14 @@ type RandomOptions = {
 }
 
 const _random: { [seed: string]: seedrandom.PRNG } = {}
-const random = ({ seed }: Partial<RandomOptions> = {}) => {
+export const random = ({ seed }: Partial<RandomOptions> = {}) => {
   const key = seed ?? '*'
   _random[key] = _random[key] ?? seedrandom(seed)
   return _random[key]!()
 }
 
 // https://stackoverflow.com/a/12646864/4656851
-const shuffle = <T>(list: T[], { seed }: Partial<RandomOptions> = {}): T[] => {
+export const shuffle = <T>(list: T[], { seed }: Partial<RandomOptions> = {}): T[] => {
   for (let i = list.length - 1; i > 0; i--) {
     const j = ~~(random({ seed }) * (i + 1))
     ;[list[i], list[j]] = [list[j]!, list[i]!]
@@ -25,37 +25,15 @@ const shuffle = <T>(list: T[], { seed }: Partial<RandomOptions> = {}): T[] => {
   return list
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-const pickRandom = <T>(list: readonly T[], { seed }: Partial<RandomOptions> = {}): T =>
+export const pickRandom = <T>(list: readonly T[], { seed }: Partial<RandomOptions> = {}): T =>
   list[~~(list.length * random({ seed }))]!
 
-const urlSearchParams = () =>
+export const urlSearchParams = () =>
   Array.from(new URLSearchParams(location.search)).reduce<{ [k: string]: string }>(
     (m, [k, v]) => ({ ...m, [k]: v }),
     {},
   )
 
-async function unpackDynamicImport<T = any>(promise: () => Promise<{ default: T }>) {
-  const result = await promise()
-  return result.default
-}
-
-const coordinatedUniversalMilliseconds = () => Date.now()
-
-function promisechannel<T = any>(): [send: (value: T) => void, waitFor: Promise<T>] {
-  let send: (value: T) => void = undefined as any
-  const waitFor = new Promise<T>(resolve => (send = resolve))
-  return [send, waitFor]
-}
-
-export {
-  coordinatedUniversalMilliseconds,
-  pickRandom,
-  promisechannel,
-  random,
-  shuffle,
-  sleep,
-  unpackDynamicImport,
-  urlSearchParams,
-}
+export const coordinatedUniversalMilliseconds = () => Date.now()
