@@ -17,6 +17,7 @@ export type EntityState = PieceState & {
 
 export type BeastState = EntityState & {
   level: number
+  zIndex: number
 }
 
 export type PlayerState = BeastState & {

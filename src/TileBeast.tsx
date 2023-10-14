@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import TileEntity from './TileEntity'
 import { BeastState, MapSize } from './types'
@@ -8,11 +8,12 @@ type TileBeastProps = PropsWithChildren<{
   mapSize: MapSize
   inradius: number
   tilesHigh: number
+  zFixedChildren?: ReactNode
 }>
 
-function TileBeast({ beast, children, ...props }: TileBeastProps) {
+function TileBeast({ beast, zFixedChildren, children, ...props }: TileBeastProps) {
   return (
-    <TileEntity {...props} entity={beast}>
+    <TileEntity {...props} entity={beast} zFixedChildren={zFixedChildren}>
       {children}
     </TileEntity>
   )

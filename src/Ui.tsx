@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { AppStateDispatchContext } from './AppState'
+import { AppStateDispatchContext } from './AppStateContext'
 import LRScreen from './LRScreen'
 
 function Ui() {

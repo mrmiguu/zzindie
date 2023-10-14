@@ -1,11 +1,11 @@
-import { PropsWithChildren, useContext } from 'react'
+import { PropsWithChildren, ReactNode, useContext } from 'react'
 
 import { animated, useSpring } from '@react-spring/three'
 
-import { AppStateContext } from './AppState'
-import { absMod } from './math'
+import { getTileBeastsAndHigher } from './appState'
+import { AppStateContext } from './AppStateContext'
 import { MapSize, PieceState } from './types'
-import { PI, values } from './utils'
+import { PI } from './utils'
 
 const OFF_HALF = 0.5
 const NARROW_FACTOR = 1.1
@@ -15,14 +15,14 @@ type TilePieceProps = PropsWithChildren<{
   mapSize: MapSize
   inradius: number
   tilesHigh: number
+  zFixedChildren?: ReactNode
 }>
 
-function TilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHigh, children }: TilePieceProps) {
-  const { pieces } = useContext(AppStateContext)
+function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, children }: TilePieceProps) {
+  const { x, id, zSpecial } = piece
+  const appState = useContext(AppStateContext)
 
-  const zIndexes = values(pieces)
-    .filter(p => absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
-    .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
+  const zIndexes = getTileBeastsAndHigher(appState, x)
 
   const zIndex = zIndexes.findIndex(p => p.id === id)
   const end = zIndexes.length - 1
@@ -32,12 +32,26 @@ function TilePiece({ piece: { x, id, zSpecial }, mapSize, inradius, tilesHigh, c
 
   const springs = useSpring({
     pieceXRotationZ: ((x * 360) / mapSize) * (PI / 180),
-    pieceYPositionY: -inradius - zDepth,
+    pieceZPositionY: -inradius - zDepth,
+    pieceCenterZPositionY: -inradius - 0.5,
   })
 
   return (
     <animated.group key={id} rotation-z={springs.pieceXRotationZ}>
-      <animated.group position-y={springs.pieceYPositionY} position-z={tilesHigh / 2 + 0.5}>
+      {zFixedChildren && (
+        <animated.group
+          rotation-x={(90 * PI) / 180}
+          position-y={springs.pieceCenterZPositionY}
+          position-z={tilesHigh / 2 + 0.5}
+        >
+          {zFixedChildren}
+        </animated.group>
+      )}
+      <animated.group
+        rotation-x={(90 * PI) / 180}
+        position-y={springs.pieceZPositionY}
+        position-z={tilesHigh / 2 + 0.5}
+      >
         {children}
       </animated.group>
     </animated.group>

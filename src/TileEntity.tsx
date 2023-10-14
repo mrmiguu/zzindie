@@ -1,20 +1,20 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import { animated, easings, useSpring } from '@react-spring/three'
 
 import { useEmojiTextureAsset } from './assets.emojis'
 import TilePiece from './TilePiece'
 import { EntityState, MapSize } from './types'
-import { PI } from './utils'
 
 type TileEntityProps = PropsWithChildren<{
   entity: EntityState
   mapSize: MapSize
   inradius: number
   tilesHigh: number
+  zFixedChildren?: ReactNode
 }>
 
-function TileEntity({ entity, children, ...props }: TileEntityProps) {
+function TileEntity({ entity, zFixedChildren, children, ...props }: TileEntityProps) {
   const texture = useEmojiTextureAsset(entity.sprite)
 
   const isEntityBeast = 'level' in entity
@@ -35,9 +35,9 @@ function TileEntity({ entity, children, ...props }: TileEntityProps) {
   )
 
   return (
-    <TilePiece {...props} piece={entity}>
+    <TilePiece {...props} piece={entity} zFixedChildren={zFixedChildren}>
       {texture && (
-        <animated.mesh rotation-x={(90 * PI) / 180} scale={breathingScale}>
+        <animated.mesh scale={breathingScale}>
           <boxGeometry args={[1, 1, 0]} />
           <meshStandardMaterial map={texture} transparent={true} />
           {children}

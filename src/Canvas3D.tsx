@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { Canvas } from '@react-three/fiber'
 
-import { AppStateContext } from './AppState'
+import { AppStateContext } from './AppStateContext'
 import TileCarousel from './TileCarousel'
 import { MapSize } from './types'
 

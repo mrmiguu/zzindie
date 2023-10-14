@@ -1,17 +1,17 @@
 import { produce } from 'immer'
-import { createContext, Dispatch, PropsWithChildren, useReducer } from 'react'
 
-import { useMusic } from './assets.music'
 import { playSound } from './assets.sounds'
-import { BeastState, EntityState, PieceState, PlayerState } from './types'
-import { stringify } from './utils'
+import { absMod } from './math'
+import { BeastState, EntityState, GamePieceState, MapSize, PlayerState } from './types'
+import { stringify, values } from './utils'
 
-type AppState = {
+export type AppState = {
   myId: string | null
-  pieces: { [id: string]: PieceState | EntityState | BeastState | PlayerState }
+  pieces: { [id: string]: GamePieceState }
+  mapSize: MapSize
 }
 
-type AppStateAction =
+export type AppStateAction =
   | {
       type: 'addEntity'
       entity: EntityState
@@ -37,7 +37,7 @@ type AppStateAction =
       playerId: string
     }
 
-function appStateReducer(appState: AppState, action: AppStateAction) {
+export const appStateReducer = (appState: AppState, action: AppStateAction) => {
   return produce(appState, appState => {
     switch (action.type) {
       case 'addEntity': {
@@ -64,6 +64,8 @@ function appStateReducer(appState: AppState, action: AppStateAction) {
         if (player) {
           player.x = player.x - 1
           player.xTimestamp = Date.now()
+          sortMapBeastsAndHigher(appState)
+
           playSound('dash')
         }
         break
@@ -73,6 +75,8 @@ function appStateReducer(appState: AppState, action: AppStateAction) {
         if (player) {
           player.x = player.x + 1
           player.xTimestamp = Date.now()
+          sortMapBeastsAndHigher(appState)
+
           playSound('dash')
         }
         break
@@ -84,22 +88,24 @@ function appStateReducer(appState: AppState, action: AppStateAction) {
   })
 }
 
-export const AppStateContext = createContext<AppState>(null as unknown as AppState)
-export const AppStateDispatchContext = createContext<Dispatch<AppStateAction>>(
-  null as unknown as Dispatch<AppStateAction>,
-)
+export const getTileBeastsAndHigher = (state: AppState, x: number) => {
+  const zIndexes = (values(state.pieces) as BeastState[])
+    .filter(p => 'level' in p && absMod(p.x, state.mapSize) === absMod(x, state.mapSize) && !p.zSpecial)
+    .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 
-export function AppStateProvider({ children }: PropsWithChildren) {
-  const [appState, dispatch] = useReducer(appStateReducer, {
-    myId: null,
-    pieces: {},
-  })
+  return zIndexes
+}
 
-  useMusic({ volume: 0.2 })
+export const sortTileBeastsAndHigher = (state: AppState, x: number) => {
+  const zIndexes = getTileBeastsAndHigher(state, x)
 
-  return (
-    <AppStateContext.Provider value={appState}>
-      <AppStateDispatchContext.Provider value={dispatch}>{children}</AppStateDispatchContext.Provider>
-    </AppStateContext.Provider>
-  )
+  for (let i = 0; i < zIndexes.length; i++) {
+    zIndexes[i]!.zIndex = i
+  }
+}
+
+export const sortMapBeastsAndHigher = (state: AppState) => {
+  for (let x = 0; x < state.mapSize; x++) {
+    sortTileBeastsAndHigher(state, x)
+  }
 }

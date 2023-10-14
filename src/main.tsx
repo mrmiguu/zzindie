@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client'
 import { Toaster } from 'react-hot-toast'
 
 import App from './App.tsx'
-import { AppStateProvider } from './AppState.tsx'
+import { AppStateProvider } from './AppStateContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
