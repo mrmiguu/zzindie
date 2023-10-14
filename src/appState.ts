@@ -48,16 +48,19 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
       }
       case 'addPiece': {
         action.piece.xTimestamp = Date.now()
+        sortMapCreatures(appState, action.piece.mapId)
         appState.pieces[action.piece.id] = action.piece
         break
       }
       case 'addCreature': {
         action.creature.xTimestamp = Date.now()
+        sortMapCreatures(appState, action.creature.mapId)
         appState.pieces[action.creature.id] = action.creature
         break
       }
       case 'addPlayer': {
         action.player.xTimestamp = Date.now()
+        sortMapCreatures(appState, action.player.mapId)
         appState.pieces[action.player.id] = action.player
         break
       }

@@ -56,7 +56,7 @@ function App() {
     appStateDispatch({
       type: 'addPlayer',
       player: {
-        id: 'bby',
+        id: 'jelly',
         level: 1,
         name: 'Mr. Jelly',
         sprite: '🪼',
@@ -70,7 +70,21 @@ function App() {
     appStateDispatch({
       type: 'addPlayer',
       player: {
-        id: 'abc',
+        id: 'froge',
+        level: 1,
+        name: 'Froge',
+        sprite: '🐸',
+        voice: 'en_us_001',
+        mapId,
+        x: 2,
+        zIndex: 0,
+      },
+    })
+
+    appStateDispatch({
+      type: 'addPlayer',
+      player: {
+        id: 'alex',
         level: 1,
         name: 'Squid esq.',
         sprite: '🦑',
@@ -81,7 +95,7 @@ function App() {
       },
     })
 
-    appStateDispatch({ type: 'setMyId', id: 'abc' })
+    appStateDispatch({ type: 'setMyId', id: 'alex' })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
