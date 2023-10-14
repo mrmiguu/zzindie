@@ -67,9 +67,9 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, childr
         </animated.group>
       )}
       <animated.group
-        rotation-x={(90 * PI) / 180}
+        rotation-x={zSpecial === 'surface' ? 0 : (90 * PI) / 180}
         position-y={springs.pieceZPositionY}
-        position-z={tilesHigh / 2 + 0.5}
+        position-z={tilesHigh / 2 + (zSpecial === 'surface' ? 0.001 : 0.5)}
       >
         {texture && (
           <animated.mesh scale={breathingSpring.scale}>

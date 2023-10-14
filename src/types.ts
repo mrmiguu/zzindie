@@ -9,7 +9,7 @@ export type PieceState = {
   mapId: string
   x: number
   xTimestamp?: number
-  zSpecial?: 'foreground' | 'background' | 'item'
+  zSpecial?: 'foreground' | 'background' | 'surface' | 'item'
   disabled?: boolean
 }
 

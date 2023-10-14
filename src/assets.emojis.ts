@@ -40,6 +40,7 @@ export const emojiAssetIdToPath = {
   '🌴': 'emojis/palm-tree.png',
   '🐧': 'emojis/penguin.png',
   '🍍': 'emojis/pineapple.png',
+  '🪧': 'emojis/placard.png',
   '🔘': 'emojis/radio-button.png',
   '🦑': 'emojis/squid.png',
   '🌞': 'emojis/sun-with-face.png',

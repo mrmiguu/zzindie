@@ -9,38 +9,48 @@ function App() {
   const appStateDispatch = useContext(AppStateDispatchContext)
 
   useEffect(() => {
+    const mapId = 'planningpoker'
+
     playMusic('ac01')
 
     // Planning Poker setup
-    appStateDispatch({ type: 'addMap', map: { id: 'planningpoker', size: 64 } })
+    appStateDispatch({ type: 'addMap', map: { id: mapId, size: 63 } })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '1', sprite: '1️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -2 },
+      piece: { id: 'poker_sign', sprite: '🪧', mapId, zSpecial: 'background', x: -3 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '2', sprite: '2️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -1 },
+      piece: { id: 'poker_switch', sprite: '🔘', mapId, zSpecial: 'surface', x: -3 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '3', sprite: '3️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 0 },
+      piece: { id: '1', sprite: '1️⃣', mapId, zSpecial: 'foreground', x: -2 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '5', sprite: '5️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 1 },
+      piece: { id: '2', sprite: '2️⃣', mapId, zSpecial: 'foreground', x: -1 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '8', sprite: '8️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 2 },
+      piece: { id: '3', sprite: '3️⃣', mapId, zSpecial: 'foreground', x: 0 },
+    })
+    appStateDispatch({
+      type: 'addPiece',
+      piece: { id: '5', sprite: '5️⃣', mapId, zSpecial: 'foreground', x: 1 },
+    })
+    appStateDispatch({
+      type: 'addPiece',
+      piece: { id: '8', sprite: '8️⃣', mapId, zSpecial: 'foreground', x: 2 },
     })
     // Fun scenery
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'palm', sprite: '🌴', zSpecial: 'background', mapId: 'planningpoker', x: 4 },
+      piece: { id: 'palm', sprite: '🌴', mapId, zSpecial: 'background', x: 4 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', mapId: 'planningpoker', x: 5 },
+      piece: { id: 'drink', sprite: '🍹', mapId, zSpecial: 'foreground', x: 5 },
     })
 
     appStateDispatch({
@@ -51,7 +61,7 @@ function App() {
         name: 'Mr. Jelly',
         sprite: '🪼',
         voice: 'en_us_001',
-        mapId: 'planningpoker',
+        mapId,
         x: 2,
         zIndex: 0,
       },
@@ -65,7 +75,7 @@ function App() {
         name: 'Squid esq.',
         sprite: '🦑',
         voice: 'en_us_001',
-        mapId: 'planningpoker',
+        mapId,
         x: 0,
         zIndex: 0,
       },
