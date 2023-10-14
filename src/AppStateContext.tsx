@@ -12,7 +12,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   const [appState, dispatch] = useReducer(appStateReducer, {
     myId: null,
     pieces: {},
-    mapSize: 7,
+    maps: {},
   })
 
   useMusic({ volume: 0.2 })

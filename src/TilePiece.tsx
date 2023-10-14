@@ -19,10 +19,10 @@ type TilePieceProps = PropsWithChildren<{
 }>
 
 function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, children }: TilePieceProps) {
-  const { x, id, zSpecial } = piece
+  const { x, id, zSpecial, mapId } = piece
   const appState = useContext(AppStateContext)
 
-  const zIndexes = getTileBeastsAndHigher(appState, x)
+  const zIndexes = getTileBeastsAndHigher(appState, mapId, x)
 
   const zIndex = zIndexes.findIndex(p => p.id === id)
   const end = zIndexes.length - 1

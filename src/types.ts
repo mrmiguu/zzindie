@@ -4,6 +4,7 @@ import { Voice } from './tts'
 
 export type PieceState = {
   id: string
+  mapId: string
   x: number
   xTimestamp?: number
   zSpecial?: 'foreground' | 'background' | 'item'
@@ -29,8 +30,14 @@ export type GamePieceState = PieceState | EntityState | BeastState | PlayerState
 
 export type GameStatePieces = { [id: string]: GamePieceState }
 
-export type GameState = {
-  pieces: GameStatePieces
+export type MapSize = (typeof mapSizes)[number]
+
+export type MapState = {
+  id: string
+  size: MapSize
 }
 
-export type MapSize = (typeof mapSizes)[number]
+export type GameState = {
+  pieces: { [id: string]: GamePieceState }
+  maps: { [id: string]: MapState }
+}
