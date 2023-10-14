@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react'
 
 import { AppStateDispatchContext } from './AppState'
+import { playMusic } from './assets.music'
 import Canvas3D from './Canvas3D'
 import Ui from './Ui'
 
@@ -8,6 +9,8 @@ function App() {
   const appStateDispatch = useContext(AppStateDispatchContext)
 
   useEffect(() => {
+    playMusic('ac01')
+
     appStateDispatch({
       type: 'addEntity',
       entity: {
@@ -17,6 +20,7 @@ function App() {
         x: 3,
       },
     })
+
     appStateDispatch({
       type: 'addEntity',
       entity: {
@@ -26,6 +30,7 @@ function App() {
         x: 3,
       },
     })
+
     appStateDispatch({
       type: 'addPlayer',
       player: {
@@ -37,6 +42,7 @@ function App() {
         x: 2,
       },
     })
+
     appStateDispatch({
       type: 'addPlayer',
       player: {
@@ -48,7 +54,9 @@ function App() {
         x: 0,
       },
     })
+
     appStateDispatch({ type: 'setMyId', id: 'abc' })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

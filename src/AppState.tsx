@@ -1,6 +1,8 @@
 import { produce } from 'immer'
 import { createContext, Dispatch, PropsWithChildren, useReducer } from 'react'
 
+import { useMusic } from './assets.music'
+import { playSound } from './assets.sounds'
 import { BeastState, EntityState, PieceState, PlayerState } from './types'
 import { stringify } from './utils'
 
@@ -36,52 +38,50 @@ type AppStateAction =
     }
 
 function appStateReducer(appState: AppState, action: AppStateAction) {
-  switch (action.type) {
-    case 'addEntity': {
-      return produce(appState, appState => {
+  return produce(appState, appState => {
+    switch (action.type) {
+      case 'addEntity': {
         action.entity.xTimestamp = Date.now()
         appState.pieces[action.entity.id] = action.entity
-      })
-    }
-    case 'addBeast': {
-      return produce(appState, appState => {
+        break
+      }
+      case 'addBeast': {
         action.beast.xTimestamp = Date.now()
         appState.pieces[action.beast.id] = action.beast
-      })
-    }
-    case 'addPlayer': {
-      return produce(appState, appState => {
+        break
+      }
+      case 'addPlayer': {
         action.player.xTimestamp = Date.now()
         appState.pieces[action.player.id] = action.player
-      })
-    }
-    case 'setMyId': {
-      return produce(appState, appState => {
+        break
+      }
+      case 'setMyId': {
         appState.myId = action.id
-      })
-    }
-    case 'movePlayerLeft': {
-      return produce(appState, appState => {
+        break
+      }
+      case 'movePlayerLeft': {
         const player = appState.pieces[action.playerId]
         if (player) {
           player.x = player.x - 1
           player.xTimestamp = Date.now()
+          playSound('dash')
         }
-      })
-    }
-    case 'movePlayerRight': {
-      return produce(appState, appState => {
+        break
+      }
+      case 'movePlayerRight': {
         const player = appState.pieces[action.playerId]
         if (player) {
           player.x = player.x + 1
           player.xTimestamp = Date.now()
+          playSound('dash')
         }
-      })
+        break
+      }
+      default: {
+        throw Error(`Unknown action: ${stringify(action)}`)
+      }
     }
-    default: {
-      throw Error(`Unknown action: ${stringify(action)}`)
-    }
-  }
+  })
 }
 
 export const AppStateContext = createContext<AppState>(null as unknown as AppState)
@@ -94,6 +94,8 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     myId: null,
     pieces: {},
   })
+
+  useMusic({ volume: 0.2 })
 
   return (
     <AppStateContext.Provider value={appState}>
