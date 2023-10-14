@@ -1,7 +1,7 @@
 import { animated, useSpring } from '@react-spring/three'
 import { RoundedBox, Text } from '@react-three/drei'
 
-import TileEntity from './TileEntity'
+import TileCreature from './TileCreature'
 import { MapSize, PlayerState } from './types'
 
 const AnimatedRoundedBox = animated(RoundedBox)
@@ -19,9 +19,9 @@ function TilePlayer({ player, ...props }: TilePlayerProps) {
   })
 
   return (
-    <TileEntity
+    <TileCreature
       {...props}
-      entity={player}
+      creature={player}
       zFixedChildren={
         <AnimatedRoundedBox args={[1, 0.2, 0]} radius={0.1} position-z={0} position-y={nameYPositionY}>
           <meshStandardMaterial color="white" transparent opacity={0.8} />
@@ -30,7 +30,7 @@ function TilePlayer({ player, ...props }: TilePlayerProps) {
           </Text>
         </AnimatedRoundedBox>
       }
-    ></TileEntity>
+    ></TileCreature>
   )
 }
 

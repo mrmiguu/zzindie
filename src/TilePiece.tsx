@@ -1,9 +1,10 @@
 import { PropsWithChildren, ReactNode, useContext } from 'react'
 
-import { animated, useSpring } from '@react-spring/three'
+import { animated, easings, useSpring } from '@react-spring/three'
 
-import { getTileBeastsAndHigher } from './appState'
+import { getTileCreatures } from './appState'
 import { AppStateContext } from './AppStateContext'
+import { useEmojiTextureAsset } from './assets.emojis'
 import { MapSize, PieceState } from './types'
 import { PI } from './utils'
 
@@ -19,16 +20,34 @@ type TilePieceProps = PropsWithChildren<{
 }>
 
 function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, children }: TilePieceProps) {
-  const { x, id, zSpecial, mapId } = piece
+  const { x, id, zSpecial, mapId, sprite } = piece
   const appState = useContext(AppStateContext)
+  const texture = useEmojiTextureAsset(sprite)
 
-  const zIndexes = getTileBeastsAndHigher(appState, mapId, x)
+  const zIndexes = getTileCreatures(appState, mapId, x)
 
   const zIndex = zIndexes.findIndex(p => p.id === id)
   const end = zIndexes.length - 1
   const perc = end > 0 ? zIndex / end : 0.5
   const z = perc / NARROW_FACTOR - OFF_HALF / NARROW_FACTOR
   const zDepth = zSpecial === 'background' ? 0 : zSpecial === 'foreground' ? 1 : zSpecial === 'item' ? 0.5 : 0.5 + z
+
+  const isPieceCreature = 'level' in piece
+
+  const breathingSpring = useSpring(
+    isPieceCreature
+      ? {
+          from: { scale: 1 },
+          to: { scale: 0.95 },
+          // BUG: we stop breathing intermittently on-move
+          loop: { reverse: true },
+          config: {
+            duration: 1500,
+            easing: easings.linear,
+          },
+        }
+      : {},
+  )
 
   const springs = useSpring({
     pieceXRotationZ: ((x * 360) / mapSize) * (PI / 180),
@@ -52,7 +71,13 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, childr
         position-y={springs.pieceZPositionY}
         position-z={tilesHigh / 2 + 0.5}
       >
-        {children}
+        {texture && (
+          <animated.mesh scale={breathingSpring.scale}>
+            <boxGeometry args={[1, 1, 0]} />
+            <meshStandardMaterial map={texture} transparent={true} />
+            {children}
+          </animated.mesh>
+        )}
       </animated.group>
     </animated.group>
   )

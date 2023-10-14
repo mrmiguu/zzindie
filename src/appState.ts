@@ -2,7 +2,7 @@ import { produce } from 'immer'
 
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
-import { BeastState, EntityState, GameState, MapState, PlayerState } from './types'
+import { CreatureState, GameState, MapState, PieceState, PlayerState } from './types'
 import { stringify, values } from './utils'
 
 export type AppState = GameState & {
@@ -15,12 +15,12 @@ export type AppStateAction =
       map: MapState
     }
   | {
-      type: 'addEntity'
-      entity: EntityState
+      type: 'addPiece'
+      piece: PieceState
     }
   | {
-      type: 'addBeast'
-      beast: BeastState
+      type: 'addCreature'
+      creature: CreatureState
     }
   | {
       type: 'addPlayer'
@@ -46,14 +46,14 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
         appState.maps[action.map.id] = action.map
         break
       }
-      case 'addEntity': {
-        action.entity.xTimestamp = Date.now()
-        appState.pieces[action.entity.id] = action.entity
+      case 'addPiece': {
+        action.piece.xTimestamp = Date.now()
+        appState.pieces[action.piece.id] = action.piece
         break
       }
-      case 'addBeast': {
-        action.beast.xTimestamp = Date.now()
-        appState.pieces[action.beast.id] = action.beast
+      case 'addCreature': {
+        action.creature.xTimestamp = Date.now()
+        appState.pieces[action.creature.id] = action.creature
         break
       }
       case 'addPlayer': {
@@ -70,7 +70,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
         if (player) {
           player.x = player.x - 1
           player.xTimestamp = Date.now()
-          sortMapBeastsAndHigher(appState, player.mapId)
+          sortMapCreatures(appState, player.mapId)
 
           playSound('dash')
         }
@@ -81,7 +81,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
         if (player) {
           player.x = player.x + 1
           player.xTimestamp = Date.now()
-          sortMapBeastsAndHigher(appState, player.mapId)
+          sortMapCreatures(appState, player.mapId)
 
           playSound('dash')
         }
@@ -94,28 +94,28 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
   })
 }
 
-export const getTileBeastsAndHigher = (state: AppState, mapId: string, x: number) => {
+export const getTileCreatures = (state: AppState, mapId: string, x: number) => {
   const { size: mapSize = 2 } = state.maps[mapId] ?? {}
 
-  const zIndexes = (values(state.pieces) as BeastState[])
+  const zIndexes = (values(state.pieces) as CreatureState[])
     .filter(p => 'level' in p && absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 
   return zIndexes
 }
 
-export const sortTileBeastsAndHigher = (state: AppState, mapId: string, x: number) => {
-  const zIndexes = getTileBeastsAndHigher(state, mapId, x)
+export const sortTileCreatures = (state: AppState, mapId: string, x: number) => {
+  const zIndexes = getTileCreatures(state, mapId, x)
 
   for (let i = 0; i < zIndexes.length; i++) {
     zIndexes[i]!.zIndex = i
   }
 }
 
-export const sortMapBeastsAndHigher = (state: AppState, mapId: string) => {
+export const sortMapCreatures = (state: AppState, mapId: string) => {
   const { size: mapSize = 2 } = state.maps[mapId] ?? {}
 
   for (let x = 0; x < mapSize; x++) {
-    sortTileBeastsAndHigher(state, mapId, x)
+    sortTileCreatures(state, mapId, x)
   }
 }

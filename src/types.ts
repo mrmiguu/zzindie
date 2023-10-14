@@ -4,6 +4,8 @@ import { Voice } from './tts'
 
 export type PieceState = {
   id: string
+  sprite: EmojiAssetId
+  hueRotate?: number
   mapId: string
   x: number
   xTimestamp?: number
@@ -11,22 +13,17 @@ export type PieceState = {
   disabled?: boolean
 }
 
-export type EntityState = PieceState & {
-  sprite: EmojiAssetId
-  hueRotate?: number
-}
-
-export type BeastState = EntityState & {
+export type CreatureState = PieceState & {
   level: number
   zIndex: number
 }
 
-export type PlayerState = BeastState & {
+export type PlayerState = CreatureState & {
   name: string
   voice: Voice
 }
 
-export type GamePieceState = PieceState | EntityState | BeastState | PlayerState
+export type GamePieceState = PieceState | CreatureState | PlayerState
 
 export type GameStatePieces = { [id: string]: GamePieceState }
 

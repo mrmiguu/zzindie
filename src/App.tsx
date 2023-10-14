@@ -14,34 +14,33 @@ function App() {
     // Planning Poker setup
     appStateDispatch({ type: 'addMap', map: { id: 'planningpoker', size: 64 } })
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: '1', sprite: '1️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -2 },
+      type: 'addPiece',
+      piece: { id: '1', sprite: '1️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -2 },
     })
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: '2', sprite: '2️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -1 },
+      type: 'addPiece',
+      piece: { id: '2', sprite: '2️⃣', zSpecial: 'background', mapId: 'planningpoker', x: -1 },
     })
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: '3', sprite: '3️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 0 },
+      type: 'addPiece',
+      piece: { id: '3', sprite: '3️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 0 },
     })
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: '5', sprite: '5️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 1 },
+      type: 'addPiece',
+      piece: { id: '5', sprite: '5️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 1 },
     })
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: '8', sprite: '8️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 2 },
+      type: 'addPiece',
+      piece: { id: '8', sprite: '8️⃣', zSpecial: 'background', mapId: 'planningpoker', x: 2 },
     })
-
+    // Fun scenery
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: 'palm', sprite: '🌴', zSpecial: 'background', mapId: 'planningpoker', x: 4 },
+      type: 'addPiece',
+      piece: { id: 'palm', sprite: '🌴', zSpecial: 'background', mapId: 'planningpoker', x: 4 },
     })
-
     appStateDispatch({
-      type: 'addEntity',
-      entity: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', mapId: 'planningpoker', x: 5 },
+      type: 'addPiece',
+      piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', mapId: 'planningpoker', x: 5 },
     })
 
     appStateDispatch({

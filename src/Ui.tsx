@@ -8,10 +8,6 @@ function Ui() {
 
   return (
     <div className="overflow-hidden pointer-events-none">
-      {/* <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
-        <div className="outline" />
-      </div> */}
-
       <div className="absolute top-0 left-0 w-full h-full pointer-events-auto">
         <LRScreen
           onL={() => appStateDispatch({ type: 'movePlayerLeft', playerId: 'abc' })}

@@ -4,8 +4,7 @@ import { animated, useSpring } from '@react-spring/three'
 
 import { TILE_PX } from './consts'
 import { polygonInradius } from './math'
-import TileBeast from './TileBeast'
-import TileEntity from './TileEntity'
+import TileCreature from './TileCreature'
 import TilePiece from './TilePiece'
 import TilePlayer from './TilePlayer'
 import { GameStatePieces, MapSize } from './types'
@@ -44,9 +43,7 @@ function TileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: Tile
     'name' in piece ? (
       <TilePlayer key={piece.id} player={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : 'level' in piece ? (
-      <TileBeast key={piece.id} beast={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
-    ) : 'sprite' in piece ? (
-      <TileEntity key={piece.id} entity={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
+      <TileCreature key={piece.id} creature={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ) : (
       <TilePiece key={piece.id} piece={piece} mapSize={mapSize} inradius={inradius} tilesHigh={tilesHigh} />
     ),
