@@ -5,6 +5,7 @@ import { Voice } from './tts'
 export type ZSpecial = 'foreground' | 'background' | 'surface' | 'item'
 
 export type PieceStatus = 'ghostmode' | 'poison'
+export type CreatureStatuses = { [key in PieceStatus]?: true }
 
 export type PieceState = {
   id: string
@@ -22,7 +23,7 @@ export type PieceState = {
 export type CreatureState = PieceState & {
   level: number
   zIndex: number
-  status?: PieceStatus[]
+  statuses?: CreatureStatuses
 }
 
 export type PlayerState = CreatureState & {

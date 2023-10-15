@@ -1,6 +1,6 @@
-import { PropsWithChildren, ReactNode, useEffect, useMemo } from 'react'
-import toast from 'react-hot-toast'
+import { PropsWithChildren, ReactNode, useContext, useMemo } from 'react'
 
+import { AppStateContext } from './AppStateContext'
 import TilePiece from './TilePiece'
 import { CreatureState, MapSize } from './types'
 import { stringify } from './utils'
@@ -14,15 +14,16 @@ type TileCreatureProps = PropsWithChildren<{
 }>
 
 function TileCreature({ creature, zFixedChildren, children, ...props }: TileCreatureProps) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const status = useMemo(() => creature?.status, [stringify(creature.status)])
+  const { myId } = useContext(AppStateContext)
 
-  useEffect(() => {
-    toast(`Status: ${status || 'n/a'}`)
-  }, [status])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const statuses = useMemo(() => creature?.statuses ?? {}, [stringify(creature.statuses)])
+
+  const sprite = 'ghostmode' in statuses ? '👻' : creature.sprite
+  const opacity = 'ghostmode' in statuses ? (creature.id === myId ? 0.5 : 0) : 1
 
   return (
-    <TilePiece {...props} piece={creature} zFixedChildren={zFixedChildren}>
+    <TilePiece {...props} piece={{ ...creature, sprite }} opacity={opacity} zFixedChildren={zFixedChildren}>
       {children}
     </TilePiece>
   )

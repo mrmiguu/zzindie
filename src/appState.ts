@@ -2,8 +2,8 @@ import { produce } from 'immer'
 
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
-import { CreatureState, GameState, MapState, PieceState, PlayerState } from './types'
-import { stringify, values } from './utils'
+import { CreatureState, CreatureStatuses, GameState, MapState, PieceState, PlayerState } from './types'
+import { keys, stringify, values } from './utils'
 
 export type AppState = GameState & {
   myId: string | null
@@ -134,19 +134,18 @@ export const sortMapCreatures = (state: AppState, mapId: string) => {
 }
 
 export const statusEffectTileCreatures = (state: AppState, mapId: string, x: number) => {
-  const zIndexes = getTileCreatures(state, mapId, x)
+  const tileCreatures = getTileCreatures(state, mapId, x)
   const statusEffectPieces = getStatusEffectTilePieces(state, mapId, x)
 
-  for (let i = 0; i < zIndexes.length; i++) {
-    const creature = zIndexes[i]!
-    creature.zIndex = i
-
+  for (const creature of tileCreatures) {
     const statuses = statusEffectPieces
       .filter(p => p.id !== creature.id)
-      .map(p => p.statusEffect!)
-      .sort()
-    if (statuses.length) creature.status = statuses
-    else delete creature.status
+      .reduce<CreatureStatuses>((acc, p) => ({ ...(acc ?? {}), [p.statusEffect!]: true }), {})
+
+    if ('ghostmode' in statuses) creature.zIndex = 0
+
+    if (keys(statuses).length) creature.statuses = statuses
+    else delete creature.statuses
   }
 }
 
@@ -159,6 +158,6 @@ export const statusEffectMapCreatures = (state: AppState, mapId: string) => {
 }
 
 export const processMapCreatures = (state: AppState, mapId: string) => {
-  sortMapCreatures(state, mapId)
-  statusEffectMapCreatures(state, mapId)
+  sortMapCreatures(state, mapId) // Any zIndex status effects will be overridden if soft happens after.
+  statusEffectMapCreatures(state, mapId) // Any zIndex status effects will be overridden if soft happens after.
 }

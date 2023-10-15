@@ -16,15 +16,16 @@ type TilePieceProps = PropsWithChildren<{
   mapSize: MapSize
   inradius: number
   tilesHigh: number
+  opacity?: number
   zFixedChildren?: ReactNode
 }>
 
-function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, children }: TilePieceProps) {
+function TilePiece({ piece, mapSize, inradius, tilesHigh, opacity, zFixedChildren, children }: TilePieceProps) {
   const { x, id, zSpecial, mapId, sprite } = piece
   const appState = useContext(AppStateContext)
   const texture = useEmojiTextureAsset(sprite)
 
-  const zIndexes = getTileCreatures(appState, mapId, x)
+  const zIndexes = getTileCreatures(appState, mapId, x).filter(c => !('ghostmode' in (c.statuses ?? {})))
 
   const zIndex = zIndexes.findIndex(p => p.id === id)
   const end = zIndexes.length - 1
@@ -57,28 +58,32 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, zFixedChildren, childr
 
   return (
     <animated.group key={id} rotation-z={springs.pieceXRotationZ}>
-      {zFixedChildren && (
-        <animated.group
-          rotation-x={(90 * PI) / 180}
-          position-y={springs.pieceCenterZPositionY}
-          position-z={tilesHigh / 2 + 0.5}
-        >
-          {zFixedChildren}
-        </animated.group>
+      {opacity !== 0 && (
+        <>
+          {zFixedChildren && (
+            <animated.group
+              rotation-x={(90 * PI) / 180}
+              position-y={springs.pieceCenterZPositionY}
+              position-z={tilesHigh / 2 + 0.5}
+            >
+              {zFixedChildren}
+            </animated.group>
+          )}
+          <animated.group
+            rotation-x={zSpecial === 'surface' ? 0 : (90 * PI) / 180}
+            position-y={springs.pieceZPositionY}
+            position-z={tilesHigh / 2 + (zSpecial === 'surface' ? 0.001 : 0.5)}
+          >
+            {texture && (
+              <animated.mesh scale={breathingSpring.scale}>
+                <boxGeometry args={[1, 1, 0]} />
+                <meshStandardMaterial map={texture} transparent={true} opacity={opacity} />
+                {children}
+              </animated.mesh>
+            )}
+          </animated.group>
+        </>
       )}
-      <animated.group
-        rotation-x={zSpecial === 'surface' ? 0 : (90 * PI) / 180}
-        position-y={springs.pieceZPositionY}
-        position-z={tilesHigh / 2 + (zSpecial === 'surface' ? 0.001 : 0.5)}
-      >
-        {texture && (
-          <animated.mesh scale={breathingSpring.scale}>
-            <boxGeometry args={[1, 1, 0]} />
-            <meshStandardMaterial map={texture} transparent={true} />
-            {children}
-          </animated.mesh>
-        )}
-      </animated.group>
     </animated.group>
   )
 }
