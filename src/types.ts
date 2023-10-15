@@ -2,6 +2,10 @@ import { EmojiAssetId } from './assets.emojis'
 import { mapSizes } from './consts'
 import { Voice } from './tts'
 
+export type ZSpecial = 'foreground' | 'background' | 'surface' | 'item'
+
+export type PieceStatus = 'ghostmode' | 'poison'
+
 export type PieceState = {
   id: string
   sprite: EmojiAssetId
@@ -9,13 +13,16 @@ export type PieceState = {
   mapId: string
   x: number
   xTimestamp?: number
-  zSpecial?: 'foreground' | 'background' | 'surface' | 'item'
+  zSpecial?: ZSpecial
+  statusEffect?: PieceStatus
+  statusEffectElectricity?: PieceStatus
   disabled?: boolean
 }
 
 export type CreatureState = PieceState & {
   level: number
   zIndex: number
+  status?: PieceStatus[]
 }
 
 export type PlayerState = CreatureState & {

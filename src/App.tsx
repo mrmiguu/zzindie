@@ -25,23 +25,23 @@ function App() {
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '1', sprite: '1️⃣', mapId, zSpecial: 'foreground', x: -2 },
+      piece: { id: '1', sprite: '1️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: -2 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '2', sprite: '2️⃣', mapId, zSpecial: 'foreground', x: -1 },
+      piece: { id: '2', sprite: '2️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: -1 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '3', sprite: '3️⃣', mapId, zSpecial: 'foreground', x: 0 },
+      piece: { id: '3', sprite: '3️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 0 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '5', sprite: '5️⃣', mapId, zSpecial: 'foreground', x: 1 },
+      piece: { id: '5', sprite: '5️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 1 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '8', sprite: '8️⃣', mapId, zSpecial: 'foreground', x: 2 },
+      piece: { id: '8', sprite: '8️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 2 },
     })
     // Fun scenery
     appStateDispatch({
@@ -61,6 +61,7 @@ function App() {
         name: 'Mr. Jelly',
         sprite: '🪼',
         voice: 'en_us_001',
+        statusEffect: 'poison',
         mapId,
         x: 2,
         zIndex: 0,
