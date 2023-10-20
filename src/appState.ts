@@ -2,6 +2,7 @@ import { produce } from 'immer'
 
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
+import { difference } from './math.sets'
 import { CreatureState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
 import { keys, stringify, values } from './utils'
 
@@ -237,11 +238,14 @@ export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
     }
   }
 
-  // TODO: Use a cleaner deep object comparison.
-  if (!(stringify(keys(tilesElectrified).sort()) === stringify(keys(map.tilesElectrified ?? {}).sort()))) {
-    map.tilesElectrified = tilesElectrified
+  const newElec = new Set(keys(tilesElectrified))
+  const oldElec = new Set(keys(map.tilesElectrified ?? {}))
+
+  if (difference(newElec, oldElec).size > 0) {
     playSound('zap3')
   }
+
+  map.tilesElectrified = tilesElectrified
 }
 
 export const statusEffectMapPieces = (state: AppState, mapId: string) => {
