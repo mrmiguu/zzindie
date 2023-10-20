@@ -12,6 +12,8 @@ type TilePlayerProps = {
 }
 
 function TilePlayer({ player, ...props }: TilePlayerProps) {
+  const { name, sprite } = player
+
   const { nameYPositionY } = useSpring({
     nameYPositionY: 0.5 + 0.2 + 0.25 * player.zIndex,
   })
@@ -22,8 +24,11 @@ function TilePlayer({ player, ...props }: TilePlayerProps) {
       creature={player}
       zFixedChildren={
         <animated.mesh position-z={0} position-y={nameYPositionY}>
-          <Html transform scale={0.3}>
-            <div className="w-auto px-3 py-1 rounded-xl bg-white/80">{player.name}</div>
+          <Html transform scale={0.3} pointerEvents="none">
+            {/* TODO: Find fix for text-sm and font-mono; they break centering. */}
+            <div className="px-3 py-1 rounded-xl bg-white/80">
+              {name} {sprite}
+            </div>
           </Html>
         </animated.mesh>
       }

@@ -112,7 +112,7 @@ function App() {
         statuses: {},
         statusEffect: 'poison',
         mapId,
-        x: -3,
+        x: -1,
         zIndex: 0,
       },
     })
@@ -137,7 +137,7 @@ function App() {
       player: {
         id: 'alex',
         level: 1,
-        name: 'Squid esq.',
+        name: 'Squidward',
         sprite: '🦑',
         voice: 'en_us_001',
         statuses: {},
