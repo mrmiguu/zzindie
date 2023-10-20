@@ -16,13 +16,9 @@ function Canvas3D() {
       <Canvas flat linear>
         <ambientLight intensity={3} />
         <directionalLight position={[1, 1, 0]} />
-        <TileCarousel
-          tilesHigh={500}
-          cameraAngle={70}
-          mapSize={myMap?.size ?? 2}
-          xCamera={myPlayer?.x ?? 0}
-          pieces={pieces}
-        />
+        {myMap && (
+          <TileCarousel tilesHigh={500} cameraAngle={70} map={myMap} xCamera={myPlayer?.x ?? 0} pieces={pieces} />
+        )}
       </Canvas>
     </div>
   )

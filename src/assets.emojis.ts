@@ -18,6 +18,7 @@ export const emojiAssetIdToPath = {
   '🌝': 'emojis/full-moon-face.png',
   '👻': 'emojis/ghost.png',
   '🐣': 'emojis/hatching-chick.png',
+  '⚡️': 'emojis/high-voltage.png',
   '🐝': 'emojis/honeybee.png',
   '🪼': 'emojis/jellyfish.png',
   '#️⃣': 'emojis/keycap-number-sign.png',

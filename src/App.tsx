@@ -17,40 +17,88 @@ function App() {
     appStateDispatch({ type: 'addMap', map: { id: mapId, size: 63 } })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'poker_sign', sprite: '🪧', mapId, zSpecial: 'background', x: -3 },
+      piece: { id: 'poker_sign', sprite: '👻', zSpecial: 'background', statuses: {}, mapId, x: -3 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'poker_switch', sprite: '🔘', mapId, zSpecial: 'surface', x: -3 },
+      piece: {
+        id: 'poker_switch',
+        sprite: '🔘',
+        zSpecial: 'surface',
+        statuses: {},
+        statusEffectPressed: 'electrified',
+        mapId,
+        x: -3,
+      },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '1', sprite: '1️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: -2 },
+      piece: {
+        id: '1',
+        sprite: '1️⃣',
+        zSpecial: 'background',
+        statuses: {},
+        statusEffectElectrified: 'ghostmode',
+        mapId,
+        x: -2,
+      },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '2', sprite: '2️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: -1 },
+      piece: {
+        id: '2',
+        sprite: '2️⃣',
+        zSpecial: 'background',
+        statuses: {},
+        statusEffectElectrified: 'ghostmode',
+        mapId,
+        x: -1,
+      },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '3', sprite: '3️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 0 },
+      piece: {
+        id: '3',
+        sprite: '3️⃣',
+        zSpecial: 'background',
+        statuses: {},
+        statusEffectElectrified: 'ghostmode',
+        mapId,
+        x: 0,
+      },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '5', sprite: '5️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 1 },
+      piece: {
+        id: '5',
+        sprite: '5️⃣',
+        zSpecial: 'background',
+        statuses: {},
+        statusEffectElectrified: 'ghostmode',
+        mapId,
+        x: 1,
+      },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: '8', sprite: '8️⃣', mapId, statusEffect: 'ghostmode', zSpecial: 'background', x: 2 },
+      piece: {
+        id: '8',
+        sprite: '8️⃣',
+        zSpecial: 'background',
+        statuses: {},
+        statusEffectElectrified: 'ghostmode',
+        mapId,
+        x: 2,
+      },
     })
     // Fun scenery
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'palm', sprite: '🌴', mapId, zSpecial: 'background', x: 4 },
+      piece: { id: 'palm', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: 4 },
     })
     appStateDispatch({
       type: 'addPiece',
-      piece: { id: 'drink', sprite: '🍹', mapId, zSpecial: 'foreground', x: 5 },
+      piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', statuses: {}, mapId, x: 5 },
     })
 
     appStateDispatch({
@@ -61,9 +109,10 @@ function App() {
         name: 'Mr. Jelly',
         sprite: '🪼',
         voice: 'en_us_001',
+        statuses: {},
         statusEffect: 'poison',
         mapId,
-        x: 2,
+        x: -3,
         zIndex: 0,
       },
     })
@@ -76,8 +125,9 @@ function App() {
         name: 'Froge',
         sprite: '🐸',
         voice: 'en_us_001',
+        statuses: {},
         mapId,
-        x: 2,
+        x: -1,
         zIndex: 0,
       },
     })
@@ -90,6 +140,7 @@ function App() {
         name: 'Squid esq.',
         sprite: '🦑',
         voice: 'en_us_001',
+        statuses: {},
         mapId,
         x: 0,
         zIndex: 0,

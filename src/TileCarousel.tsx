@@ -7,20 +7,26 @@ import { polygonInradius } from './math'
 import TileCreature from './TileCreature'
 import TilePiece from './TilePiece'
 import TilePlayer from './TilePlayer'
-import { GameStatePieces, MapSize } from './types'
-import { PI, values } from './utils'
+import { GameStatePieces, MapState } from './types'
+import { keys, PI, values } from './utils'
 
 const rainbowColors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'] as const
 
 type TileCarouselProps = {
-  mapSize: MapSize
+  map: MapState
   tilesHigh: number
   xCamera: number
   cameraAngle: number
   pieces: GameStatePieces
 }
 
-function TileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: TileCarouselProps) {
+function TileCarousel({
+  map: { id: mapId, size: mapSize, tilesElectrified },
+  tilesHigh,
+  xCamera,
+  cameraAngle,
+  pieces,
+}: TileCarouselProps) {
   const inradiusPx = polygonInradius(mapSize, TILE_PX)
   const inradius = inradiusPx / TILE_PX
 
@@ -49,6 +55,16 @@ function TileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: Tile
     ),
   )
 
+  const zapEls = keys(tilesElectrified ?? {}).map(xStr => (
+    <TilePiece
+      key={xStr}
+      piece={{ id: xStr, x: Number(xStr), mapId, sprite: '⚡️', statuses: {}, zSpecial: 'surface' }}
+      mapSize={mapSize}
+      inradius={inradius}
+      tilesHigh={tilesHigh}
+    />
+  ))
+
   const springs = useSpring({
     xCameraRotationZ: ((-xCamera * 360) / mapSize) * (PI / 180),
   })
@@ -59,6 +75,7 @@ function TileCarousel({ mapSize, tilesHigh, xCamera, cameraAngle, pieces }: Tile
         <animated.group rotation-z={springs.xCameraRotationZ}>
           {tileEls}
           {pieceEls}
+          <group position-z={0.0001}>{zapEls}</group>
         </animated.group>
       </group>
     </group>

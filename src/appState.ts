@@ -2,7 +2,7 @@ import { produce } from 'immer'
 
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
-import { CreatureState, CreatureStatuses, GameState, MapState, PieceState, PlayerState } from './types'
+import { CreatureState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
 import { keys, stringify, values } from './utils'
 
 export type AppState = GameState & {
@@ -101,9 +101,21 @@ export const getStatusEffectTilePieces = (state: AppState, mapId: string, x: num
   const { size: mapSize = 2 } = state.maps[mapId] ?? {}
 
   const zIndexes = (values(state.pieces) as PieceState[])
-    .filter(p => absMod(p.x, mapSize) === absMod(x, mapSize) && (p.statusEffect || p.statusEffectElectricity))
+    .filter(p => {
+      const onSameTile = absMod(p.x, mapSize) === absMod(x, mapSize)
+      const hasStatusEffect = p.statusEffect
+      const hasElectrifiedStatusEffect = 'electrified' in p.statuses && p.statusEffectElectrified
+      return onSameTile && (hasStatusEffect || hasElectrifiedStatusEffect)
+    })
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 
+  return zIndexes
+}
+
+export const getTilePiecesUnordered = (state: AppState, mapId: string, x: number) => {
+  const { size: mapSize = 2 } = state.maps[mapId] ?? {}
+
+  const zIndexes = values(state.pieces).filter(p => absMod(p.x, mapSize) === absMod(x, mapSize))
   return zIndexes
 }
 
@@ -133,31 +145,118 @@ export const sortMapCreatures = (state: AppState, mapId: string) => {
   }
 }
 
-export const statusEffectTileCreatures = (state: AppState, mapId: string, x: number) => {
-  const tileCreatures = getTileCreatures(state, mapId, x)
+export const statusEffectTilePieces = (state: AppState, mapId: string, x: number) => {
+  const pieces = getTilePiecesUnordered(state, mapId, x)
   const statusEffectPieces = getStatusEffectTilePieces(state, mapId, x)
 
-  for (const creature of tileCreatures) {
+  for (const piece of pieces) {
     const statuses = statusEffectPieces
-      .filter(p => p.id !== creature.id)
-      .reduce<CreatureStatuses>((acc, p) => ({ ...(acc ?? {}), [p.statusEffect!]: true }), {})
+      .filter(p => p.id !== piece.id)
+      .reduce<PieceStatuses>(
+        (s, p) =>
+          produce(s, s => {
+            if ('electrified' in p.statuses && p.statusEffectElectrified) {
+              s[p.statusEffectElectrified] = true
+            } else if (p.statusEffect) {
+              s[p.statusEffect] = true
+            }
+          }),
+        {},
+      )
 
-    if ('ghostmode' in statuses) creature.zIndex = 0
+    const weightyPieces = pieces.filter(p => p.id !== piece.id && !p.zSpecial)
 
-    if (keys(statuses).length) creature.statuses = statuses
-    else delete creature.statuses
+    if (piece.statusEffectPressed && weightyPieces.length) {
+      statuses['electrified'] = true
+    }
+    if ('zIndex' in piece && 'ghostmode' in statuses) {
+      piece.zIndex = 0
+    }
+
+    piece.statuses = statuses
   }
 }
 
-export const statusEffectMapCreatures = (state: AppState, mapId: string) => {
+export const electrifyTilePieceCircuit = (
+  state: AppState,
+  mapId: string,
+  x: number,
+  xCache: { [x: number]: true } = {},
+) => {
   const { size: mapSize = 2 } = state.maps[mapId] ?? {}
+  const xMod = absMod(x, mapSize)
 
-  for (let x = 0; x < mapSize; x++) {
-    statusEffectTileCreatures(state, mapId, x)
+  if (xMod in xCache) return
+  xCache[xMod] = true
+
+  const pieces = getTilePiecesUnordered(state, mapId, x)
+
+  for (const piece of pieces) {
+    piece.statuses['electrified'] = true
   }
+
+  if (pieces.length) {
+    electrifyTilePieceCircuit(state, mapId, absMod(x + 1, mapSize), xCache)
+    electrifyTilePieceCircuit(state, mapId, absMod(x - 1, mapSize), xCache)
+  }
+}
+
+export const possiblyElectrifyTilePieceCircuit = (
+  state: AppState,
+  mapId: string,
+  x: number,
+  xCache: { [x: number]: true },
+) => {
+  const pieces = getTilePiecesUnordered(state, mapId, x)
+
+  if (pieces.some(p => 'electrified' in p.statuses)) {
+    electrifyTilePieceCircuit(state, mapId, x, xCache)
+    return true
+  }
+
+  return false
+}
+
+export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
+  const map = state.maps[mapId]
+  if (!map) return
+
+  const xElectricityCache: { [x: number]: true } = {}
+  let isElectrified = false
+
+  for (let x = 0; x < map.size; x++) {
+    const xElectrified = possiblyElectrifyTilePieceCircuit(state, mapId, x, xElectricityCache)
+    isElectrified = isElectrified || xElectrified
+  }
+
+  const tilesElectrified: { [x: number]: true } = {}
+
+  for (let x = 0; x < map.size; x++) {
+    if (getTilePiecesUnordered(state, mapId, x).some(p => 'electrified' in p.statuses)) {
+      tilesElectrified[x] = true
+    }
+  }
+
+  // TODO: Use a cleaner deep object comparison.
+  if (!(stringify(keys(tilesElectrified).sort()) === stringify(keys(map.tilesElectrified ?? {}).sort()))) {
+    map.tilesElectrified = tilesElectrified
+    playSound('zap3')
+  }
+}
+
+export const statusEffectMapPieces = (state: AppState, mapId: string) => {
+  const map = state.maps[mapId]
+  if (!map) return
+
+  for (let x = 0; x < map.size; x++) {
+    statusEffectTilePieces(state, mapId, x)
+  }
+
+  // This must happen after all individual tile piece statuses have been set.
+  possiblyElectrifyMapPieces(state, mapId)
 }
 
 export const processMapCreatures = (state: AppState, mapId: string) => {
   sortMapCreatures(state, mapId) // Any zIndex status effects will be overridden if soft happens after.
-  statusEffectMapCreatures(state, mapId) // Any zIndex status effects will be overridden if soft happens after.
+  statusEffectMapPieces(state, mapId) // Any zIndex status effects will be overridden if soft happens after.
 }

@@ -4,8 +4,8 @@ import { Voice } from './tts'
 
 export type ZSpecial = 'foreground' | 'background' | 'surface' | 'item'
 
-export type PieceStatus = 'ghostmode' | 'poison'
-export type CreatureStatuses = { [key in PieceStatus]?: true }
+export type PieceStatus = 'electrified' | 'ghostmode' | 'poison'
+export type PieceStatuses = { [key in PieceStatus]?: true }
 
 export type PieceState = {
   id: string
@@ -15,15 +15,16 @@ export type PieceState = {
   x: number
   xTimestamp?: number
   zSpecial?: ZSpecial
+  statuses: PieceStatuses
   statusEffect?: PieceStatus
-  statusEffectElectricity?: PieceStatus
+  statusEffectElectrified?: PieceStatus
+  statusEffectPressed?: PieceStatus
   disabled?: boolean
 }
 
 export type CreatureState = PieceState & {
   level: number
   zIndex: number
-  statuses?: CreatureStatuses
 }
 
 export type PlayerState = CreatureState & {
@@ -40,6 +41,7 @@ export type MapSize = (typeof mapSizes)[number]
 export type MapState = {
   id: string
   size: MapSize
+  tilesElectrified?: { [x: number]: true }
 }
 
 export type GameState = {

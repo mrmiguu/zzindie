@@ -31,7 +31,7 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, opacity, zFixedChildre
   const end = zIndexes.length - 1
   const perc = end > 0 ? zIndex / end : 0.5
   const z = perc / NARROW_FACTOR - OFF_HALF / NARROW_FACTOR
-  const zDepth = zSpecial === 'background' ? 0 : zSpecial === 'foreground' ? 1 : zSpecial === 'item' ? 0.5 : 0.5 + z
+  const zDepth = zSpecial === 'background' ? 0 : zSpecial === 'foreground' ? 1 : zSpecial ? 0.5 : 0.5 + z
 
   const isPieceCreature = 'level' in piece
 
