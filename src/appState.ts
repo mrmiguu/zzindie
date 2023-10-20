@@ -4,7 +4,7 @@ import { playSound } from './assets.sounds'
 import { absMod } from './math'
 import { difference } from './math.sets'
 import { CreatureState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
-import { keys, stringify, values } from './utils'
+import { keys, pickRandom, stringify, values } from './utils'
 
 export type AppState = GameState & {
   myId: string | null
@@ -242,7 +242,7 @@ export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
   const oldElec = new Set(keys(map.tilesElectrified ?? {}))
 
   if (difference(newElec, oldElec).size > 0) {
-    playSound('zap3')
+    playSound(pickRandom(['zap1', 'zap2', 'zap3']))
   }
 
   map.tilesElectrified = tilesElectrified
