@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 
 import { AppStateDispatchContext } from './AppStateContext'
-import { playMusic } from './assets.music'
 import Canvas3D from './Canvas3D'
 import Ui from './Ui'
 
@@ -11,7 +10,7 @@ function App() {
   useEffect(() => {
     const mapId = 'planningpoker'
 
-    playMusic('ac01')
+    // playMusic('ac01')
 
     // Planning Poker setup
     appStateDispatch({ type: 'addMap', map: { id: mapId, size: 63 } })
@@ -112,7 +111,7 @@ function App() {
         statuses: {},
         statusEffect: 'poison',
         mapId,
-        x: -1,
+        x: -3,
         zIndex: 0,
       },
     })

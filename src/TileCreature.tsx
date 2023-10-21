@@ -22,10 +22,6 @@ function TileCreature({ creature, zFixedChildren, children, ...props }: TileCrea
   const sprite = 'ghostmode' in statuses ? '👻' : creature.sprite
   const opacity = 'ghostmode' in statuses ? (creature.id === myId ? 0.5 : 0) : 1
 
-  // useEffect(() => {
-  //   toast(`Status: ${stringify(statuses)}`)
-  // }, [statuses])
-
   return (
     <TilePiece {...props} piece={{ ...creature, sprite }} opacity={opacity} zFixedChildren={zFixedChildren}>
       {children}

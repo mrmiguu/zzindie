@@ -1,4 +1,7 @@
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
+// Derived from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
+
+export type ObjKey = string | number | symbol
+export type ObjSet<T extends ObjKey> = { [key in T]: true }
 
 export const isSuperset = <T>(set: Set<T>, subset: Set<T>) => {
   for (const elem of subset) {
@@ -39,10 +42,10 @@ export const symmetricDifference = <T>(setA: Set<T>, setB: Set<T>) => {
   return _difference
 }
 
-export const difference = <T>(setA: Set<T>, setB: Set<T>) => {
-  const _difference = new Set(setA)
-  for (const elem of setB) {
-    _difference.delete(elem)
+export const difference = <T extends ObjKey>(setA: ObjSet<T>, setB: ObjSet<T>) => {
+  const _difference = { ...setA }
+  for (const elem in setB) {
+    delete _difference[elem]
   }
   return _difference
 }

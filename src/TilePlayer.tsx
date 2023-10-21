@@ -12,10 +12,10 @@ type TilePlayerProps = {
 }
 
 function TilePlayer({ player, ...props }: TilePlayerProps) {
-  const { name, sprite } = player
+  const { name, sprite, statuses } = player
 
   const { nameYPositionY } = useSpring({
-    nameYPositionY: 0.5 + 0.2 + 0.25 * player.zIndex,
+    nameYPositionY: 0.5 + 0.2 + ('ghostmode' in statuses ? 0 : 0.25 * player.zIndex),
   })
 
   return (

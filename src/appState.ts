@@ -2,8 +2,8 @@ import { produce } from 'immer'
 
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
-import { difference } from './math.sets'
-import { CreatureState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
+import { difference } from './math.objsets'
+import { CreatureState, GamePieceState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
 import { keys, pickRandom, stringify, values } from './utils'
 
 export type AppState = GameState & {
@@ -238,14 +238,31 @@ export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
     }
   }
 
-  const newElec = new Set(keys(tilesElectrified))
-  const oldElec = new Set(keys(map.tilesElectrified ?? {}))
-
-  if (difference(newElec, oldElec).size > 0) {
+  if (keys(difference(tilesElectrified, map.tilesElectrified ?? {})).length) {
     playSound(pickRandom(['zap1', 'zap2', 'zap3']))
   }
 
   map.tilesElectrified = tilesElectrified
+}
+
+export const statusEffectElectrifiedTilePiece = (piece: GamePieceState, statusEffectPieces: GamePieceState[]) => {
+  for (const statusEffectPiece of statusEffectPieces) {
+    const { statusEffectElectrified, statuses } = statusEffectPiece
+
+    if (!('electrified' in statuses)) continue
+    if (!statusEffectElectrified) continue
+
+    piece.statuses[statusEffectElectrified] = true
+  }
+}
+
+export const statusEffectElectrifiedTilePieces = (state: AppState, mapId: string, x: number) => {
+  const pieces = getTilePiecesUnordered(state, mapId, x)
+  const statusEffectPieces = getStatusEffectTilePieces(state, mapId, x)
+
+  for (const piece of pieces) {
+    statusEffectElectrifiedTilePiece(piece, statusEffectPieces)
+  }
 }
 
 export const statusEffectMapPieces = (state: AppState, mapId: string) => {
@@ -258,6 +275,10 @@ export const statusEffectMapPieces = (state: AppState, mapId: string) => {
 
   // This must happen after all individual tile piece statuses have been set.
   possiblyElectrifyMapPieces(state, mapId)
+
+  for (let x = 0; x < map.size; x++) {
+    statusEffectElectrifiedTilePieces(state, mapId, x)
+  }
 }
 
 export const processMapCreatures = (state: AppState, mapId: string) => {
