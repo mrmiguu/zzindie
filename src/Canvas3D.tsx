@@ -11,6 +11,9 @@ function Canvas3D() {
   const myPlayer = myId ? pieces[myId] : undefined
   const myMap = maps[myPlayer?.mapId ?? '']
 
+  // Temporarily allow console-based view of current map.
+  ;(window as Window & typeof globalThis & { myMap: unknown }).myMap = myMap
+
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-600 to-blue-400">
       <Canvas flat linear>

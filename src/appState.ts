@@ -16,7 +16,7 @@ export type AppStateAction =
       map: MapState
     }
   | {
-      type: 'addPiece'
+      type: 'addMapPiece'
       piece: PieceState
     }
   | {
@@ -47,7 +47,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
         appState.maps[action.map.id] = action.map
         break
       }
-      case 'addPiece': {
+      case 'addMapPiece': {
         action.piece.xTimestamp = Date.now()
         appState.maps[action.piece.mapId]!.pieces[action.piece.id] = action.piece
         processMapCreatures(appState, action.piece.mapId)

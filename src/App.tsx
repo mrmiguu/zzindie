@@ -85,7 +85,7 @@ function App() {
 
     // Map decoration added later for fun..
     appStateDispatch({
-      type: 'addPiece',
+      type: 'addMapPiece',
       piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', statuses: {}, mapId, x: 5 },
     })
 
