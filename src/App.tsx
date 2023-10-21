@@ -7,6 +7,9 @@ import Ui from './Ui'
 function App() {
   const appStateDispatch = useContext(AppStateDispatchContext)
 
+  // Temporarily allow console-based event dispatching.
+  ;(window as Window & typeof globalThis & { appStateDispatch: unknown }).appStateDispatch = appStateDispatch
+
   useEffect(() => {
     const mapId = 'planningpoker'
 
@@ -111,7 +114,7 @@ function App() {
         statuses: {},
         statusEffect: 'poison',
         mapId,
-        x: -3,
+        x: -1,
         zIndex: 0,
       },
     })
