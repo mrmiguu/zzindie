@@ -49,7 +49,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
       }
       case 'addPiece': {
         action.piece.xTimestamp = Date.now()
-        appState.pieces[action.piece.id] = action.piece
+        appState.maps[action.piece.mapId]!.pieces[action.piece.id] = action.piece
         processMapCreatures(appState, action.piece.mapId)
         break
       }
@@ -99,9 +99,9 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
 }
 
 export const getStatusEffectTilePieces = (state: AppState, mapId: string, x: number) => {
-  const { size: mapSize = 2 } = state.maps[mapId] ?? {}
+  const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
-  const zIndexes = (values(state.pieces) as PieceState[])
+  const zIndexes = (values({ ...state.pieces, ...mapPieces }) as PieceState[])
     .filter(p => {
       const onSameTile = absMod(p.x, mapSize) === absMod(x, mapSize)
       const hasStatusEffect = p.statusEffect
@@ -114,16 +114,16 @@ export const getStatusEffectTilePieces = (state: AppState, mapId: string, x: num
 }
 
 export const getTilePiecesUnordered = (state: AppState, mapId: string, x: number) => {
-  const { size: mapSize = 2 } = state.maps[mapId] ?? {}
+  const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
-  const zIndexes = values(state.pieces).filter(p => absMod(p.x, mapSize) === absMod(x, mapSize))
+  const zIndexes = values({ ...state.pieces, ...mapPieces }).filter(p => absMod(p.x, mapSize) === absMod(x, mapSize))
   return zIndexes
 }
 
 export const getTileCreatures = (state: AppState, mapId: string, x: number) => {
-  const { size: mapSize = 2 } = state.maps[mapId] ?? {}
+  const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
-  const zIndexes = (values(state.pieces) as CreatureState[])
+  const zIndexes = (values({ ...state.pieces, ...mapPieces }) as CreatureState[])
     .filter(p => 'level' in p && absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 

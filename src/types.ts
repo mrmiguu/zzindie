@@ -41,6 +41,7 @@ export type MapSize = (typeof mapSizes)[number]
 export type MapState = {
   id: string
   size: MapSize
+  pieces: { [id: string]: GamePieceState }
   tilesElectrified?: { [x: number]: true }
 }
 

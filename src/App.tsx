@@ -16,88 +16,74 @@ function App() {
     // playMusic('ac01')
 
     // Planning Poker setup
-    appStateDispatch({ type: 'addMap', map: { id: mapId, size: 63 } })
     appStateDispatch({
-      type: 'addPiece',
-      piece: { id: 'poker_sign', sprite: '👻', zSpecial: 'background', statuses: {}, mapId, x: -3 },
-    })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: 'poker_switch',
-        sprite: '🔘',
-        zSpecial: 'surface',
-        statuses: {},
-        statusEffectPressed: 'electrified',
-        mapId,
-        x: -3,
+      type: 'addMap',
+      map: {
+        id: mapId,
+        size: 63,
+        pieces: {
+          poker_sign: { id: 'poker_sign', sprite: '👻', zSpecial: 'background', statuses: {}, mapId, x: -3 },
+          poker_switch: {
+            id: 'poker_switch',
+            sprite: '🔘',
+            zSpecial: 'surface',
+            statuses: {},
+            statusEffectPressed: 'electrified',
+            mapId,
+            x: -3,
+          },
+          '1': {
+            id: '1',
+            sprite: '1️⃣',
+            zSpecial: 'background',
+            statuses: {},
+            statusEffectElectrified: 'ghostmode',
+            mapId,
+            x: -2,
+          },
+          '2': {
+            id: '2',
+            sprite: '2️⃣',
+            zSpecial: 'background',
+            statuses: {},
+            statusEffectElectrified: 'ghostmode',
+            mapId,
+            x: -1,
+          },
+          '3': {
+            id: '3',
+            sprite: '3️⃣',
+            zSpecial: 'background',
+            statuses: {},
+            statusEffectElectrified: 'ghostmode',
+            mapId,
+            x: 0,
+          },
+          '5': {
+            id: '5',
+            sprite: '5️⃣',
+            zSpecial: 'background',
+            statuses: {},
+            statusEffectElectrified: 'ghostmode',
+            mapId,
+            x: 1,
+          },
+          '8': {
+            id: '8',
+            sprite: '8️⃣',
+            zSpecial: 'background',
+            statuses: {},
+            statusEffectElectrified: 'ghostmode',
+            mapId,
+            x: 2,
+          },
+          palm1: { id: 'palm1', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: -5 },
+          palm2: { id: 'palm2', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: 4 },
+        },
       },
     })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: '1',
-        sprite: '1️⃣',
-        zSpecial: 'background',
-        statuses: {},
-        statusEffectElectrified: 'ghostmode',
-        mapId,
-        x: -2,
-      },
-    })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: '2',
-        sprite: '2️⃣',
-        zSpecial: 'background',
-        statuses: {},
-        statusEffectElectrified: 'ghostmode',
-        mapId,
-        x: -1,
-      },
-    })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: '3',
-        sprite: '3️⃣',
-        zSpecial: 'background',
-        statuses: {},
-        statusEffectElectrified: 'ghostmode',
-        mapId,
-        x: 0,
-      },
-    })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: '5',
-        sprite: '5️⃣',
-        zSpecial: 'background',
-        statuses: {},
-        statusEffectElectrified: 'ghostmode',
-        mapId,
-        x: 1,
-      },
-    })
-    appStateDispatch({
-      type: 'addPiece',
-      piece: {
-        id: '8',
-        sprite: '8️⃣',
-        zSpecial: 'background',
-        statuses: {},
-        statusEffectElectrified: 'ghostmode',
-        mapId,
-        x: 2,
-      },
-    })
-    // Fun scenery
-    appStateDispatch({
-      type: 'addPiece',
-      piece: { id: 'palm', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: 4 },
-    })
+
+    // Map decoration added later for fun..
     appStateDispatch({
       type: 'addPiece',
       piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', statuses: {}, mapId, x: 5 },
