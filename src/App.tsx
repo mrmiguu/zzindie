@@ -35,7 +35,7 @@ function App() {
           '1': {
             id: '1',
             sprite: '1️⃣',
-            zSpecial: 'background',
+            zSpecial: 'wallface',
             statuses: {},
             statusEffectElectrified: 'ghostmode',
             mapId,
@@ -44,7 +44,7 @@ function App() {
           '2': {
             id: '2',
             sprite: '2️⃣',
-            zSpecial: 'background',
+            zSpecial: 'wallface',
             statuses: {},
             statusEffectElectrified: 'ghostmode',
             mapId,
@@ -53,7 +53,7 @@ function App() {
           '3': {
             id: '3',
             sprite: '3️⃣',
-            zSpecial: 'background',
+            zSpecial: 'wallface',
             statuses: {},
             statusEffectElectrified: 'ghostmode',
             mapId,
@@ -62,7 +62,7 @@ function App() {
           '5': {
             id: '5',
             sprite: '5️⃣',
-            zSpecial: 'background',
+            zSpecial: 'wallface',
             statuses: {},
             statusEffectElectrified: 'ghostmode',
             mapId,
@@ -71,7 +71,7 @@ function App() {
           '8': {
             id: '8',
             sprite: '8️⃣',
-            zSpecial: 'background',
+            zSpecial: 'wallface',
             statuses: {},
             statusEffectElectrified: 'ghostmode',
             mapId,
