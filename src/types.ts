@@ -1,4 +1,5 @@
 import { EmojiAssetId } from './assets.emojis'
+import { MusicAssetId } from './assets.music'
 import { mapSizes } from './consts'
 import { Voice } from './tts'
 
@@ -42,6 +43,7 @@ export type MapState = {
   id: string
   size: MapSize
   pieces: { [id: string]: GamePieceState }
+  music?: MusicAssetId
   tilesElectrified?: { [x: number]: true }
 }
 

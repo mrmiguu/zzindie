@@ -1,8 +1,9 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Canvas } from '@react-three/fiber'
 
 import { AppStateContext } from './AppStateContext'
+import { playMusic } from './assets.music'
 import TileCarousel from './TileCarousel'
 
 function Canvas3D() {
@@ -13,6 +14,10 @@ function Canvas3D() {
 
   // Temporarily allow console-based view of current map.
   ;(window as Window & typeof globalThis & { myMap: unknown }).myMap = myMap
+
+  useEffect(() => {
+    if (myMap?.music) playMusic(myMap.music)
+  }, [myMap?.music])
 
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-600 to-blue-400">

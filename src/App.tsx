@@ -13,8 +13,6 @@ function App() {
   useEffect(() => {
     const mapId = 'planningpoker'
 
-    // playMusic('ac01')
-
     // Planning Poker setup
     appStateDispatch({
       type: 'addMap',
@@ -80,6 +78,7 @@ function App() {
           palm1: { id: 'palm1', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: -5 },
           palm2: { id: 'palm2', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: 4 },
         },
+        music: 'ac01',
       },
     })
 
