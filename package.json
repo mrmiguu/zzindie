@@ -13,6 +13,7 @@
     "@react-spring/three": "^9.7.3",
     "@react-three/drei": "^9.86.3",
     "@react-three/fiber": "^8.14.3",
+    "@supabase/supabase-js": "^2.38.2",
     "@types/three": "^0.156.0",
     "howler": "^2.2.4",
     "immer": "^10.0.2",
@@ -20,13 +21,15 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "seedrandom": "^3.0.5",
-    "three": "^0.157.0"
+    "three": "^0.157.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/howler": "^2.2.9",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/seedrandom": "^3.0.6",
+    "@types/uuid": "^9.0.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",

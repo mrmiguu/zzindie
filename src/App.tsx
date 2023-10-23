@@ -1,14 +1,67 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { v4 as uuidv4 } from 'uuid'
+
+import { AuthError, Session, User } from '@supabase/supabase-js'
 
 import { AppStateDispatchContext } from './AppStateContext'
 import Canvas3D from './Canvas3D'
+import { supabase } from './supabase'
 import Ui from './Ui'
+
+type UserAuthState = [User | null, Session | null, AuthError | null]
 
 function App() {
   const appStateDispatch = useContext(AppStateDispatchContext)
 
+  const [[user, session, authError], setUser] = useState<UserAuthState>([null, null, null])
+
   // Temporarily allow console-based event dispatching.
   ;(window as Window & typeof globalThis & { appStateDispatch: unknown }).appStateDispatch = appStateDispatch
+
+  useEffect(() => {
+    const getOrCreateAnonymousUser = async () => {
+      const myAnonymousEmail = localStorage.getItem('myAnonymousEmail')
+      const myAnonymousPassword = localStorage.getItem('myAnonymousPassword')
+
+      if (!myAnonymousEmail || !myAnonymousPassword) {
+        const randomEmail = `${uuidv4()}@zzindie.com`
+        const randomPassword = `${uuidv4()}`
+
+        const { data, error } = await supabase.auth.signUp({
+          email: randomEmail,
+          password: randomPassword,
+        })
+
+        if (!error) {
+          localStorage.setItem('myAnonymousEmail', randomEmail)
+          localStorage.setItem('myAnonymousPassword', randomPassword)
+
+          setUser([data.user, data.session, error])
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: myAnonymousEmail,
+          password: myAnonymousPassword,
+        })
+
+        setUser([data.user, data.session, error])
+      }
+    }
+    getOrCreateAnonymousUser()
+  }, [])
+
+  useEffect(() => {
+    if (authError) {
+      toast.error(`${authError.name} (${authError.status}): ${authError.message}`)
+    }
+  }, [authError])
+
+  useEffect(() => {
+    if (user && session) {
+      toast('user and session ok!')
+    }
+  }, [user, session])
 
   useEffect(() => {
     const mapId = 'planningpoker'
