@@ -4,8 +4,12 @@ import { AppStateContext, AppStateDispatchContext } from './AppStateContext'
 import LRScreen from './LRScreen'
 
 function Ui() {
-  const { myId } = useContext(AppStateContext)
+  const { myId, mode } = useContext(AppStateContext)
   const appStateDispatch = useContext(AppStateDispatchContext)
+
+  if (mode === 'build') {
+    return null
+  }
 
   return (
     <div className="overflow-hidden pointer-events-none">

@@ -66,12 +66,17 @@ function App() {
   useEffect(() => {
     const mapId = 'planningpoker'
 
+    // appStateDispatch({
+    //   type: 'switchModes',
+    //   mode: 'build',
+    // })
+
     // Planning Poker setup
     appStateDispatch({
       type: 'addMap',
       map: {
         id: mapId,
-        size: 63,
+        size: 35,
         pieces: {
           poker_sign: { id: 'poker_sign', sprite: '👻', zSpecial: 'background', statuses: {}, mapId, x: -3 },
           poker_switch: {

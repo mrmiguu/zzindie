@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 import { Canvas } from '@react-three/fiber'
 
@@ -21,7 +22,13 @@ function Canvas3D() {
 
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-600 to-blue-400">
-      <Canvas flat linear>
+      <Canvas
+        flat
+        linear
+        onClick={() => {
+          toast(`Canvas:Html:click!`)
+        }}
+      >
         <ambientLight intensity={3} />
         <directionalLight position={[1, 1, 0]} />
         {myMap && (

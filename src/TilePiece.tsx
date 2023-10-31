@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode, useContext } from 'react'
 
 import { animated, easings, useSpring } from '@react-spring/three'
+import { ThreeEvent } from '@react-three/fiber'
 
 import { getTileCreatures } from './appState'
 import { AppStateContext } from './AppStateContext'
@@ -17,10 +18,22 @@ type TilePieceProps = PropsWithChildren<{
   inradius: number
   tilesHigh: number
   opacity?: number
+  xTeleport?: boolean
+  onClick?: (event: ThreeEvent<MouseEvent>) => void
   zFixedChildren?: ReactNode
 }>
 
-function TilePiece({ piece, mapSize, inradius, tilesHigh, opacity, zFixedChildren, children }: TilePieceProps) {
+function TilePiece({
+  piece,
+  mapSize,
+  inradius,
+  tilesHigh,
+  opacity,
+  xTeleport,
+  onClick,
+  zFixedChildren,
+  children,
+}: TilePieceProps) {
   const { x, id, zSpecial, mapId, sprite } = piece
   const appState = useContext(AppStateContext)
   const texture = useEmojiTextureAsset(sprite)
@@ -57,14 +70,16 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, opacity, zFixedChildre
       : {},
   )
 
+  const pieceXRotationZ = ((x * 360) / mapSize) * (PI / 180)
+
   const springs = useSpring({
-    pieceXRotationZ: ((x * 360) / mapSize) * (PI / 180),
+    pieceXRotationZ,
     pieceZPositionY: -inradius - zDepth,
     pieceCenterZPositionY: -inradius - 0.5,
   })
 
   return (
-    <animated.group key={id} rotation-z={springs.pieceXRotationZ}>
+    <animated.group key={id} rotation-z={xTeleport ? pieceXRotationZ : springs.pieceXRotationZ}>
       {opacity !== 0 && (
         <>
           {zFixedChildren && (
@@ -82,7 +97,7 @@ function TilePiece({ piece, mapSize, inradius, tilesHigh, opacity, zFixedChildre
             position-z={tilesHigh / 2 + (zSpecial === 'surface' ? 0.001 : zSpecial === 'wallface' ? -0.5 : 0.5)}
           >
             {texture && (
-              <animated.mesh scale={breathingSpring.scale}>
+              <animated.mesh scale={breathingSpring.scale} onPointerUp={onClick}>
                 <boxGeometry args={[1, 1, 0]} />
                 <meshStandardMaterial map={texture} transparent={true} opacity={opacity} />
                 {children}

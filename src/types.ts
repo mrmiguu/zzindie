@@ -47,6 +47,8 @@ export type MapState = {
   tilesElectrified?: { [x: number]: true }
 }
 
+export type GameMode = 'build'
+
 export type GameState = {
   pieces: { [id: string]: GamePieceState }
   maps: { [id: string]: MapState }

@@ -14,13 +14,17 @@ type TileCreatureProps = PropsWithChildren<{
 }>
 
 function TileCreature({ creature, zFixedChildren, children, ...props }: TileCreatureProps) {
-  const { myId } = useContext(AppStateContext)
+  const { myId, mode } = useContext(AppStateContext)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const statuses = useMemo(() => creature?.statuses ?? {}, [stringify(creature.statuses)])
 
   const sprite = 'ghostmode' in statuses ? '👻' : creature.sprite
   const opacity = 'ghostmode' in statuses ? (creature.id === myId ? 0.5 : 0) : 1
+
+  if (mode === 'build') {
+    return null
+  }
 
   return (
     <TilePiece {...props} piece={{ ...creature, sprite }} opacity={opacity} zFixedChildren={zFixedChildren}>

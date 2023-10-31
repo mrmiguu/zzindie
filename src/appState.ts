@@ -3,14 +3,28 @@ import { produce } from 'immer'
 import { playSound } from './assets.sounds'
 import { absMod } from './math'
 import { difference } from './math.objsets'
-import { CreatureState, GamePieceState, GameState, MapState, PieceState, PieceStatuses, PlayerState } from './types'
+import {
+  CreatureState,
+  GameMode,
+  GamePieceState,
+  GameState,
+  MapState,
+  PieceState,
+  PieceStatuses,
+  PlayerState,
+} from './types'
 import { keys, pickRandom, stringify, values } from './utils'
 
 export type AppState = GameState & {
   myId: string | null
+  mode?: GameMode
 }
 
 export type AppStateAction =
+  | {
+      type: 'switchModes'
+      mode: GameMode | undefined
+    }
   | {
       type: 'addMap'
       map: MapState
@@ -43,6 +57,14 @@ export type AppStateAction =
 export const appStateReducer = (appState: AppState, action: AppStateAction) => {
   return produce(appState, appState => {
     switch (action.type) {
+      case 'switchModes': {
+        if (action.mode === undefined) {
+          delete appState.mode
+        } else {
+          appState.mode = action.mode
+        }
+        break
+      }
       case 'addMap': {
         appState.maps[action.map.id] = action.map
         break

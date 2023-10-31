@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
+import toast from 'react-hot-toast'
 
 import { animated, useSpring } from '@react-spring/three'
 
+import { AppStateContext } from './AppStateContext'
 import { TILE_PX } from './consts'
 import { polygonInradius } from './math'
 import TileCreature from './TileCreature'
@@ -27,6 +29,7 @@ function TileCarousel({
   cameraAngle,
   pieces,
 }: TileCarouselProps) {
+  const { mode } = useContext(AppStateContext)
   const inradiusPx = polygonInradius(mapSize, TILE_PX)
   const inradius = inradiusPx / TILE_PX
 
@@ -65,6 +68,45 @@ function TileCarousel({
     />
   ))
 
+  const buildGhostTileEls = [
+    <TilePiece
+      piece={{ id: 'ghosttilebg', x: xCamera, mapId, sprite: '🟨', statuses: {}, zSpecial: 'background' }}
+      mapSize={mapSize}
+      inradius={inradius}
+      tilesHigh={tilesHigh}
+      opacity={0.5}
+      xTeleport
+      onClick={e => {
+        e.stopPropagation()
+        toast('🟨')
+      }}
+    />,
+    <TilePiece
+      piece={{ id: 'ghosttilesurf', x: xCamera, mapId, sprite: '🟧', statuses: {}, zSpecial: 'surface' }}
+      mapSize={mapSize}
+      inradius={inradius}
+      tilesHigh={tilesHigh}
+      opacity={0.5}
+      xTeleport
+      onClick={e => {
+        e.stopPropagation()
+        toast('🟧')
+      }}
+    />,
+    <TilePiece
+      piece={{ id: 'ghosttilewall', x: xCamera, mapId, sprite: '🟥', statuses: {}, zSpecial: 'wallface' }}
+      mapSize={mapSize}
+      inradius={inradius}
+      tilesHigh={tilesHigh}
+      opacity={0.5}
+      xTeleport
+      onClick={e => {
+        e.stopPropagation()
+        toast('🟥')
+      }}
+    />,
+  ]
+
   const springs = useSpring({
     xCameraRotationZ: ((-xCamera * 360) / mapSize) * (PI / 180),
   })
@@ -76,6 +118,7 @@ function TileCarousel({
           {tileEls}
           {pieceEls}
           <group position-z={0.0001}>{zapEls}</group>
+          {mode === 'build' && buildGhostTileEls}
         </animated.group>
       </group>
     </group>
