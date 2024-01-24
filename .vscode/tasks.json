@@ -3,7 +3,7 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "dev",
+      "script": "vite --host",
       "problemMatcher": [],
       "label": "npm: dev",
       "detail": "vite",
