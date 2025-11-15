@@ -5,12 +5,18 @@ import { Toaster } from 'react-hot-toast'
 
 import App from './App.tsx'
 import { AppStateProvider } from './AppStateContext.tsx'
+import { MyControlsProvider } from './MyControlsContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <AppStateProvider>
-      <App />
+      <MyControlsProvider>
+        <App />
+      </MyControlsProvider>
     </AppStateProvider>
-    <Toaster containerClassName="toaster font-mono opacity-95" position="bottom-center" />
-  </>,
+    <Toaster
+      containerClassName="toaster font-mono opacity-95"
+      position="bottom-center"
+    />
+  </>
 )

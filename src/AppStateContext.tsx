@@ -1,11 +1,19 @@
-import { createContext, Dispatch, PropsWithChildren, useReducer } from 'react'
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  useContext,
+  useReducer,
+} from 'react'
 
 import { AppState, AppStateAction, appStateReducer } from './appState'
 import { useMusic } from './assets.music'
 
-export const AppStateContext = createContext<AppState>(null as unknown as AppState)
+export const AppStateContext = createContext<AppState>(
+  null as unknown as AppState
+)
 export const AppStateDispatchContext = createContext<Dispatch<AppStateAction>>(
-  null as unknown as Dispatch<AppStateAction>,
+  null as unknown as Dispatch<AppStateAction>
 )
 
 export function AppStateProvider({ children }: PropsWithChildren) {
@@ -19,7 +27,17 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
   return (
     <AppStateContext.Provider value={appState}>
-      <AppStateDispatchContext.Provider value={dispatch}>{children}</AppStateDispatchContext.Provider>
+      <AppStateDispatchContext.Provider value={dispatch}>
+        {children}
+      </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   )
+}
+
+export function useAppState() {
+  return useContext(AppStateContext)
+}
+
+export function useAppStateDispatch() {
+  return useContext(AppStateDispatchContext)
 }

@@ -7,11 +7,7 @@ import { AppStateContext } from './AppStateContext'
 import { playMusic } from './assets.music'
 import TileCarousel from './TileCarousel'
 
-type Canvas3DProps = {
-  onHopComplete?: () => void
-}
-
-function Canvas3D({ onHopComplete }: Canvas3DProps) {
+function Canvas3D() {
   const { myId, pieces, maps } = useContext(AppStateContext)
 
   const myPlayer = myId ? pieces[myId] : undefined
@@ -42,8 +38,6 @@ function Canvas3D({ onHopComplete }: Canvas3DProps) {
             map={myMap}
             xCamera={myPlayer?.x ?? 0}
             pieces={{ ...pieces, ...myMap.pieces }}
-            myId={myId ?? undefined}
-            onHopComplete={onHopComplete}
           />
         )}
       </Canvas>

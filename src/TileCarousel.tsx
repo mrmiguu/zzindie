@@ -29,8 +29,6 @@ type TileCarouselProps = {
   xCamera: number
   cameraAngle: number
   pieces: GameStatePieces
-  myId?: string
-  onHopComplete?: () => void
 }
 
 function TileCarousel({
@@ -39,8 +37,6 @@ function TileCarousel({
   xCamera,
   cameraAngle,
   pieces,
-  myId,
-  onHopComplete,
 }: TileCarouselProps) {
   const { mode } = useContext(AppStateContext)
   const inradiusPx = polygonInradius(mapSize, TILE_PX)
@@ -71,7 +67,6 @@ function TileCarousel({
         mapSize={mapSize}
         inradius={inradius}
         tilesHigh={tilesHigh}
-        onHopComplete={piece.id === myId ? onHopComplete : undefined}
       />
     ) : 'level' in piece ? (
       <TileCreature

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -8,7 +8,6 @@ import { AppStateDispatchContext } from './AppStateContext'
 import Canvas3D from './Canvas3D'
 import { supabase } from './supabase'
 import Ui from './Ui'
-import { produce } from 'immer'
 
 type UserAuthState = [User | null, Session | null, AuthError | null]
 
@@ -234,98 +233,9 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Combo system state
-  const [heldKeys, setHeldKeys] = useState<{ left: boolean; right: boolean }>({
-    left: false,
-    right: false,
-  })
-  const comboLevelRef = useRef(0)
-
-  // Keyboard event handlers
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.repeat) return // Ignore key repeat events
-
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        setHeldKeys(
-          produce((heldKeys) => {
-            if (!heldKeys.left) {
-              comboLevelRef.current = 0
-              appStateDispatch({
-                type: 'movePlayerLeft',
-                playerId: 'alex',
-                delta: 1,
-              })
-            }
-            heldKeys.left = true
-          })
-        )
-      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        setHeldKeys(
-          produce((heldKeys) => {
-            if (!heldKeys.right) {
-              comboLevelRef.current = 0
-              appStateDispatch({
-                type: 'movePlayerRight',
-                playerId: 'alex',
-                delta: 1,
-              })
-            }
-            heldKeys.right = true
-          })
-        )
-      }
-    }
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        setHeldKeys(
-          produce((heldKeys) => {
-            heldKeys.left = false
-          })
-        )
-      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        setHeldKeys(
-          produce((heldKeys) => {
-            heldKeys.right = false
-          })
-        )
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('keyup', handleKeyUp)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [appStateDispatch])
-
-  // Hop complete handler - called when player lands
-  const handleHopComplete = useCallback(() => {
-    if (heldKeys.left) {
-      comboLevelRef.current += 1
-      appStateDispatch({
-        type: 'movePlayerLeft',
-        playerId: 'alex',
-        delta: 1 * (comboLevelRef.current + 1),
-      })
-    } else if (heldKeys.right) {
-      comboLevelRef.current += 1
-      appStateDispatch({
-        type: 'movePlayerRight',
-        playerId: 'alex',
-        delta: 1 * (comboLevelRef.current + 1),
-      })
-    } else {
-      comboLevelRef.current = 0
-    }
-  }, [heldKeys, appStateDispatch])
-
   return (
     <>
-      <Canvas3D onHopComplete={handleHopComplete} />
+      <Canvas3D />
       <Ui />
     </>
   )

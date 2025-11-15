@@ -12,6 +12,7 @@ import { ThreeEvent } from '@react-three/fiber'
 import { getTileCreatures } from './appState'
 import { AppStateContext } from './AppStateContext'
 import { useEmojiTextureAsset } from './assets.emojis'
+import { useMyControls } from './MyControlsContext'
 import { MapSize, PieceState } from './types'
 import { PI } from './utils'
 
@@ -33,7 +34,6 @@ type TilePieceProps = PropsWithChildren<{
   xTeleport?: boolean
   onClick?: (event: ThreeEvent<MouseEvent>) => void
   zFixedChildren?: ReactNode
-  onHopComplete?: () => void
 }>
 
 function TilePiece({
@@ -45,12 +45,12 @@ function TilePiece({
   xTeleport,
   onClick,
   zFixedChildren,
-  onHopComplete,
   children,
 }: TilePieceProps) {
   const { x, id, zSpecial, mapId, sprite } = piece
   const appState = useContext(AppStateContext)
   const texture = useEmojiTextureAsset(sprite)
+  const { handleHopComplete } = useMyControls()
 
   const zIndexes = getTileCreatures(appState, mapId, x).filter(
     (c) => !('ghostmode' in (c.statuses ?? {}))
@@ -132,7 +132,7 @@ function TilePiece({
         to: { hopProgress: 1 },
         config: { duration },
         onRest: () => {
-          onHopComplete?.()
+          handleHopComplete()
         },
       })
 
@@ -144,7 +144,7 @@ function TilePiece({
     }
 
     prevXRef.current = x
-  }, [x, xTeleport, hopApi, rotationApi, onHopComplete, pieceXRotationZ])
+  }, [x, xTeleport, hopApi, rotationApi, handleHopComplete, pieceXRotationZ])
 
   // Calculate hop offset using parabolic formula
   const hopOffset = hopSpring.hopProgress.to(
