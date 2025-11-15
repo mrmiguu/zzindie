@@ -48,14 +48,16 @@ export type AppStateAction =
   | {
       type: 'movePlayerLeft'
       playerId: string
+      delta?: number
     }
   | {
       type: 'movePlayerRight'
       playerId: string
+      delta?: number
     }
 
 export const appStateReducer = (appState: AppState, action: AppStateAction) => {
-  return produce(appState, appState => {
+  return produce(appState, (appState) => {
     switch (action.type) {
       case 'switchModes': {
         if (action.mode === undefined) {
@@ -71,7 +73,8 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
       }
       case 'addMapPiece': {
         action.piece.xTimestamp = Date.now()
-        appState.maps[action.piece.mapId]!.pieces[action.piece.id] = action.piece
+        appState.maps[action.piece.mapId]!.pieces[action.piece.id] =
+          action.piece
         processMapCreatures(appState, action.piece.mapId)
         break
       }
@@ -94,7 +97,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
       case 'movePlayerLeft': {
         const player = appState.pieces[action.playerId]
         if (player) {
-          player.x = player.x - 1
+          player.x = player.x - (action.delta ?? 1)
           player.xTimestamp = Date.now()
           processMapCreatures(appState, player.mapId)
 
@@ -105,7 +108,7 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
       case 'movePlayerRight': {
         const player = appState.pieces[action.playerId]
         if (player) {
-          player.x = player.x + 1
+          player.x = player.x + (action.delta ?? 1)
           player.xTimestamp = Date.now()
           processMapCreatures(appState, player.mapId)
 
@@ -120,14 +123,19 @@ export const appStateReducer = (appState: AppState, action: AppStateAction) => {
   })
 }
 
-export const getStatusEffectTilePieces = (state: AppState, mapId: string, x: number) => {
+export const getStatusEffectTilePieces = (
+  state: AppState,
+  mapId: string,
+  x: number
+) => {
   const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
   const zIndexes = (values({ ...state.pieces, ...mapPieces }) as PieceState[])
-    .filter(p => {
+    .filter((p) => {
       const onSameTile = absMod(p.x, mapSize) === absMod(x, mapSize)
       const hasStatusEffect = p.statusEffect
-      const hasElectrifiedStatusEffect = 'electrified' in p.statuses && p.statusEffectElectrified
+      const hasElectrifiedStatusEffect =
+        'electrified' in p.statuses && p.statusEffectElectrified
       return onSameTile && (hasStatusEffect || hasElectrifiedStatusEffect)
     })
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
@@ -135,24 +143,41 @@ export const getStatusEffectTilePieces = (state: AppState, mapId: string, x: num
   return zIndexes
 }
 
-export const getTilePiecesUnordered = (state: AppState, mapId: string, x: number) => {
+export const getTilePiecesUnordered = (
+  state: AppState,
+  mapId: string,
+  x: number
+) => {
   const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
-  const zIndexes = values({ ...state.pieces, ...mapPieces }).filter(p => absMod(p.x, mapSize) === absMod(x, mapSize))
+  const zIndexes = values({ ...state.pieces, ...mapPieces }).filter(
+    (p) => absMod(p.x, mapSize) === absMod(x, mapSize)
+  )
   return zIndexes
 }
 
 export const getTileCreatures = (state: AppState, mapId: string, x: number) => {
   const { size: mapSize = 2, pieces: mapPieces } = state.maps[mapId] ?? {}
 
-  const zIndexes = (values({ ...state.pieces, ...mapPieces }) as CreatureState[])
-    .filter(p => 'level' in p && absMod(p.x, mapSize) === absMod(x, mapSize) && !p.zSpecial)
+  const zIndexes = (
+    values({ ...state.pieces, ...mapPieces }) as CreatureState[]
+  )
+    .filter(
+      (p) =>
+        'level' in p &&
+        absMod(p.x, mapSize) === absMod(x, mapSize) &&
+        !p.zSpecial
+    )
     .sort((a, b) => (a.xTimestamp ?? 0) - (b.xTimestamp ?? 0))
 
   return zIndexes
 }
 
-export const sortTileCreatures = (state: AppState, mapId: string, x: number) => {
+export const sortTileCreatures = (
+  state: AppState,
+  mapId: string,
+  x: number
+) => {
   const zIndexes = getTileCreatures(state, mapId, x)
 
   for (let i = 0; i < zIndexes.length; i++) {
@@ -168,26 +193,30 @@ export const sortMapCreatures = (state: AppState, mapId: string) => {
   }
 }
 
-export const statusEffectTilePieces = (state: AppState, mapId: string, x: number) => {
+export const statusEffectTilePieces = (
+  state: AppState,
+  mapId: string,
+  x: number
+) => {
   const pieces = getTilePiecesUnordered(state, mapId, x)
   const statusEffectPieces = getStatusEffectTilePieces(state, mapId, x)
 
   for (const piece of pieces) {
     const statuses = statusEffectPieces
-      .filter(p => p.id !== piece.id)
+      .filter((p) => p.id !== piece.id)
       .reduce<PieceStatuses>(
         (s, p) =>
-          produce(s, s => {
+          produce(s, (s) => {
             if ('electrified' in p.statuses && p.statusEffectElectrified) {
               s[p.statusEffectElectrified] = true
             } else if (p.statusEffect) {
               s[p.statusEffect] = true
             }
           }),
-        {},
+        {}
       )
 
-    const weightyPieces = pieces.filter(p => p.id !== piece.id && !p.zSpecial)
+    const weightyPieces = pieces.filter((p) => p.id !== piece.id && !p.zSpecial)
 
     if (piece.statusEffectPressed && weightyPieces.length) {
       statuses['electrified'] = true
@@ -204,7 +233,7 @@ export const electrifyTilePieceCircuit = (
   state: AppState,
   mapId: string,
   x: number,
-  xCache: { [x: number]: true } = {},
+  xCache: { [x: number]: true } = {}
 ) => {
   const { size: mapSize = 2 } = state.maps[mapId] ?? {}
   const xMod = absMod(x, mapSize)
@@ -228,11 +257,11 @@ export const possiblyElectrifyTilePieceCircuit = (
   state: AppState,
   mapId: string,
   x: number,
-  xCache: { [x: number]: true },
+  xCache: { [x: number]: true }
 ) => {
   const pieces = getTilePiecesUnordered(state, mapId, x)
 
-  if (pieces.some(p => 'electrified' in p.statuses)) {
+  if (pieces.some((p) => 'electrified' in p.statuses)) {
     electrifyTilePieceCircuit(state, mapId, x, xCache)
     return true
   }
@@ -248,14 +277,23 @@ export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
   let isElectrified = false
 
   for (let x = 0; x < map.size; x++) {
-    const xElectrified = possiblyElectrifyTilePieceCircuit(state, mapId, x, xElectricityCache)
+    const xElectrified = possiblyElectrifyTilePieceCircuit(
+      state,
+      mapId,
+      x,
+      xElectricityCache
+    )
     isElectrified = isElectrified || xElectrified
   }
 
   const tilesElectrified: { [x: number]: true } = {}
 
   for (let x = 0; x < map.size; x++) {
-    if (getTilePiecesUnordered(state, mapId, x).some(p => 'electrified' in p.statuses)) {
+    if (
+      getTilePiecesUnordered(state, mapId, x).some(
+        (p) => 'electrified' in p.statuses
+      )
+    ) {
       tilesElectrified[x] = true
     }
   }
@@ -267,7 +305,10 @@ export const possiblyElectrifyMapPieces = (state: AppState, mapId: string) => {
   map.tilesElectrified = tilesElectrified
 }
 
-export const statusEffectElectrifiedTilePiece = (piece: GamePieceState, statusEffectPieces: GamePieceState[]) => {
+export const statusEffectElectrifiedTilePiece = (
+  piece: GamePieceState,
+  statusEffectPieces: GamePieceState[]
+) => {
   for (const statusEffectPiece of statusEffectPieces) {
     const { statusEffectElectrified, statuses } = statusEffectPiece
 
@@ -278,7 +319,11 @@ export const statusEffectElectrifiedTilePiece = (piece: GamePieceState, statusEf
   }
 }
 
-export const statusEffectElectrifiedTilePieces = (state: AppState, mapId: string, x: number) => {
+export const statusEffectElectrifiedTilePieces = (
+  state: AppState,
+  mapId: string,
+  x: number
+) => {
   const pieces = getTilePiecesUnordered(state, mapId, x)
   const statusEffectPieces = getStatusEffectTilePieces(state, mapId, x)
 

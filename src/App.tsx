@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -8,16 +8,23 @@ import { AppStateDispatchContext } from './AppStateContext'
 import Canvas3D from './Canvas3D'
 import { supabase } from './supabase'
 import Ui from './Ui'
+import { produce } from 'immer'
 
 type UserAuthState = [User | null, Session | null, AuthError | null]
 
 function App() {
   const appStateDispatch = useContext(AppStateDispatchContext)
 
-  const [[user, session, authError], setUser] = useState<UserAuthState>([null, null, null])
+  const [[user, session, authError], setUser] = useState<UserAuthState>([
+    null,
+    null,
+    null,
+  ])
 
   // Temporarily allow console-based event dispatching.
-  ;(window as Window & typeof globalThis & { appStateDispatch: unknown }).appStateDispatch = appStateDispatch
+  ;(
+    window as Window & typeof globalThis & { appStateDispatch: unknown }
+  ).appStateDispatch = appStateDispatch
 
   useEffect(() => {
     const getOrCreateAnonymousUser = async () => {
@@ -53,7 +60,9 @@ function App() {
 
   useEffect(() => {
     if (authError) {
-      toast.error(`${authError.name} (${authError.status}): ${authError.message}`)
+      toast.error(
+        `${authError.name} (${authError.status}): ${authError.message}`
+      )
     }
   }, [authError])
 
@@ -78,7 +87,14 @@ function App() {
         id: mapId,
         size: 35,
         pieces: {
-          poker_sign: { id: 'poker_sign', sprite: '👻', zSpecial: 'background', statuses: {}, mapId, x: -3 },
+          poker_sign: {
+            id: 'poker_sign',
+            sprite: '👻',
+            zSpecial: 'background',
+            statuses: {},
+            mapId,
+            x: -3,
+          },
           poker_switch: {
             id: 'poker_switch',
             sprite: '🔘',
@@ -133,8 +149,22 @@ function App() {
             mapId,
             x: 2,
           },
-          palm1: { id: 'palm1', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: -5 },
-          palm2: { id: 'palm2', sprite: '🌴', zSpecial: 'background', statuses: {}, mapId, x: 4 },
+          palm1: {
+            id: 'palm1',
+            sprite: '🌴',
+            zSpecial: 'background',
+            statuses: {},
+            mapId,
+            x: -5,
+          },
+          palm2: {
+            id: 'palm2',
+            sprite: '🌴',
+            zSpecial: 'background',
+            statuses: {},
+            mapId,
+            x: 4,
+          },
         },
         music: 'ac01',
       },
@@ -143,7 +173,14 @@ function App() {
     // Map decoration added later for fun..
     appStateDispatch({
       type: 'addMapPiece',
-      piece: { id: 'drink', sprite: '🍹', zSpecial: 'foreground', statuses: {}, mapId, x: 5 },
+      piece: {
+        id: 'drink',
+        sprite: '🍹',
+        zSpecial: 'foreground',
+        statuses: {},
+        mapId,
+        x: 5,
+      },
     })
 
     appStateDispatch({
@@ -197,9 +234,98 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Combo system state
+  const [heldKeys, setHeldKeys] = useState<{ left: boolean; right: boolean }>({
+    left: false,
+    right: false,
+  })
+  const comboLevelRef = useRef(0)
+
+  // Keyboard event handlers
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return // Ignore key repeat events
+
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        setHeldKeys(
+          produce((heldKeys) => {
+            if (!heldKeys.left) {
+              comboLevelRef.current = 0
+              appStateDispatch({
+                type: 'movePlayerLeft',
+                playerId: 'alex',
+                delta: 1,
+              })
+            }
+            heldKeys.left = true
+          })
+        )
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        setHeldKeys(
+          produce((heldKeys) => {
+            if (!heldKeys.right) {
+              comboLevelRef.current = 0
+              appStateDispatch({
+                type: 'movePlayerRight',
+                playerId: 'alex',
+                delta: 1,
+              })
+            }
+            heldKeys.right = true
+          })
+        )
+      }
+    }
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        setHeldKeys(
+          produce((heldKeys) => {
+            heldKeys.left = false
+          })
+        )
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        setHeldKeys(
+          produce((heldKeys) => {
+            heldKeys.right = false
+          })
+        )
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [appStateDispatch])
+
+  // Hop complete handler - called when player lands
+  const handleHopComplete = useCallback(() => {
+    if (heldKeys.left) {
+      comboLevelRef.current += 1
+      appStateDispatch({
+        type: 'movePlayerLeft',
+        playerId: 'alex',
+        delta: 1 * (comboLevelRef.current + 1),
+      })
+    } else if (heldKeys.right) {
+      comboLevelRef.current += 1
+      appStateDispatch({
+        type: 'movePlayerRight',
+        playerId: 'alex',
+        delta: 1 * (comboLevelRef.current + 1),
+      })
+    } else {
+      comboLevelRef.current = 0
+    }
+  }, [heldKeys, appStateDispatch])
+
   return (
     <>
-      <Canvas3D />
+      <Canvas3D onHopComplete={handleHopComplete} />
       <Ui />
     </>
   )

@@ -11,6 +11,7 @@ type TileCreatureProps = PropsWithChildren<{
   inradius: number
   tilesHigh: number
   zFixedChildren?: ReactNode
+  onHopComplete?: () => void
 }>
 
 function TileCreature({ creature, zFixedChildren, children, ...props }: TileCreatureProps) {

@@ -3,7 +3,12 @@ import { MusicAssetId } from './assets.music'
 import { mapSizes } from './consts'
 import { Voice } from './tts'
 
-export type ZSpecial = 'foreground' | 'background' | 'surface' | 'wallface' | 'item'
+export type ZSpecial =
+  | 'foreground'
+  | 'background'
+  | 'surface'
+  | 'wallface'
+  | 'item'
 
 export type PieceStatus = 'electrified' | 'ghostmode' | 'poison'
 export type PieceStatuses = { [key in PieceStatus]?: true }

@@ -9,6 +9,7 @@ type TilePlayerProps = {
   mapSize: MapSize
   inradius: number
   tilesHigh: number
+  onHopComplete?: () => void
 }
 
 function TilePlayer({ player, ...props }: TilePlayerProps) {
