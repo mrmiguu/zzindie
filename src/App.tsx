@@ -1,24 +1,22 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { v4 as uuidv4 } from 'uuid'
+import { User, signInAnonymously } from 'firebase/auth'
 
-import { AuthError, Session, User } from '@supabase/supabase-js'
-
-import { AppStateDispatchContext } from './AppStateContext'
+import { AppStateContext, AppStateDispatchContext } from './AppStateContext'
 import Canvas3D from './Canvas3D'
-import { supabase } from './supabase'
+import { auth } from './firebase'
+import { loadGameState, saveGameState } from './services/database'
 import Ui from './Ui'
 
-type UserAuthState = [User | null, Session | null, AuthError | null]
+type UserAuthState = [User | null, Error | null]
 
 function App() {
+  const appState = useContext(AppStateContext)
   const appStateDispatch = useContext(AppStateDispatchContext)
 
-  const [[user, session, authError], setUser] = useState<UserAuthState>([
-    null,
-    null,
-    null,
-  ])
+  const [[user, authError], setUser] = useState<UserAuthState>([null, null])
+  const [isStateInitialized, setIsStateInitialized] = useState(false)
+  const saveTimeoutRef = useRef<number | null>(null)
 
   // Temporarily allow console-based event dispatching.
   ;(
@@ -26,52 +24,76 @@ function App() {
   ).appStateDispatch = appStateDispatch
 
   useEffect(() => {
-    const getOrCreateAnonymousUser = async () => {
-      const myAnonymousEmail = localStorage.getItem('myAnonymousEmail')
-      const myAnonymousPassword = localStorage.getItem('myAnonymousPassword')
-
-      if (!myAnonymousEmail || !myAnonymousPassword) {
-        const randomEmail = `${uuidv4()}@zzindie.com`
-        const randomPassword = `${uuidv4()}`
-
-        const { data, error } = await supabase.auth.signUp({
-          email: randomEmail,
-          password: randomPassword,
-        })
-
-        if (!error) {
-          localStorage.setItem('myAnonymousEmail', randomEmail)
-          localStorage.setItem('myAnonymousPassword', randomPassword)
-
-          setUser([data.user, data.session, error])
-        }
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: myAnonymousEmail,
-          password: myAnonymousPassword,
-        })
-
-        setUser([data.user, data.session, error])
+    const signInAnonymous = async () => {
+      try {
+        const result = await signInAnonymously(auth)
+        setUser([result.user, null])
+      } catch (error) {
+        setUser([null, error as Error])
       }
     }
-    getOrCreateAnonymousUser()
+    signInAnonymous()
   }, [])
 
   useEffect(() => {
     if (authError) {
-      toast.error(
-        `${authError.name} (${authError.status}): ${authError.message}`
-      )
+      toast.error(`${authError.name}: ${authError.message}`)
     }
   }, [authError])
 
   useEffect(() => {
-    if (user && session) {
-      toast('user and session ok!')
+    if (user) {
+      toast('Anonymous user authenticated!')
     }
-  }, [user, session])
+  }, [user])
+
+  // Load game state from Firebase after authentication
+  useEffect(() => {
+    if (!user || isStateInitialized) return
+
+    const loadState = async () => {
+      try {
+        const savedState = await loadGameState(user)
+        if (savedState) {
+          appStateDispatch({ type: 'restoreState', state: savedState })
+          toast.success('Game state loaded from cloud!')
+        }
+      } catch (error) {
+        console.error('Failed to load game state:', error)
+        toast.error('Failed to load saved game state')
+      } finally {
+        setIsStateInitialized(true)
+      }
+    }
+
+    loadState()
+  }, [user, isStateInitialized, appStateDispatch])
+
+  // Auto-save game state to Firebase when it changes (debounced)
+  useEffect(() => {
+    if (!user || !isStateInitialized) return
+
+    // Debounce saves to avoid too many writes
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    saveTimeoutRef.current = window.setTimeout(() => {
+      saveGameState(user, appState).catch((error) => {
+        console.error('Failed to save game state:', error)
+      })
+    }, 1000) // Save 1 second after last change
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [user, appState, isStateInitialized])
 
   useEffect(() => {
+    if (!isStateInitialized) return
+
     const mapId = 'planningpoker'
 
     // appStateDispatch({
@@ -231,7 +253,7 @@ function App() {
     appStateDispatch({ type: 'setMyId', id: 'alex' })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isStateInitialized])
 
   return (
     <>

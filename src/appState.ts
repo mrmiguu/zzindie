@@ -22,6 +22,10 @@ export type AppState = GameState & {
 
 export type AppStateAction =
   | {
+      type: 'restoreState'
+      state: AppState
+    }
+  | {
       type: 'switchModes'
       mode: GameMode | undefined
     }
@@ -59,6 +63,11 @@ export type AppStateAction =
 export const appStateReducer = (appState: AppState, action: AppStateAction) => {
   return produce(appState, (appState) => {
     switch (action.type) {
+      case 'restoreState': {
+        // Replace entire state with the restored state
+        Object.assign(appState, action.state)
+        break
+      }
       case 'switchModes': {
         if (action.mode === undefined) {
           delete appState.mode
